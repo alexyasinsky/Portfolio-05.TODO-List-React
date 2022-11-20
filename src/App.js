@@ -7,23 +7,6 @@ import ShowTaskFormButton from "./components/ShowTaskFormButton";
 import NewTaskForm from "./components/NewTaskForm";
 import {useState} from "react";
 
-const tasks = [
-  {
-    task: 'do smth 1',
-    date: '19-11-2022',
-    done: false
-  },
-  {
-    task: 'do smth 2',
-    date: '20-11-2022',
-    done: true
-  },
-  {
-    task: 'do smth 3',
-    date: '21-11-2022',
-    done: false
-  }
-]
 
 function App() {
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -32,10 +15,6 @@ function App() {
     return setShowTaskForm(!showTaskForm);
   }
 
-  function addTask(task, date) {
-    tasks.push({task, date, done: false});
-    console.log(tasks)
-  }
 
   return (
     <Container maxWidth="md">
@@ -58,10 +37,9 @@ function App() {
           </Grid>
           <Grid item position='relative'>
               <main>
-                <TaskList list={tasks}/>
+                <TaskList/>
                 { showTaskForm ?
                   <NewTaskForm
-                    addTask={addTask}
                     close={toggleTaskForm}
                   />
                   :

@@ -2,11 +2,15 @@ import {Card, CardActions, CardContent, Fab, TextField, Typography} from "@mui/m
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {addTaskToStore} from "../store/tasks/actions";
 
-export default function NewTaskForm({addTask, close}) {
+export default function NewTaskForm({close}) {
 
   const [task, setTask] = useState('');
   const [date, setDate] = useState('');
+
+  const dispatch = useDispatch();
 
   function changeTaskHandler(e) {
     setTask(e.target.value);
@@ -17,7 +21,7 @@ export default function NewTaskForm({addTask, close}) {
   }
 
   function addButtonHandler() {
-    addTask(task, date);
+    dispatch(addTaskToStore({task, date, done: false}));
     close();
   }
 

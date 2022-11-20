@@ -1,8 +1,12 @@
 import {List, ListItem} from "@mui/material";
 import TaskItem from "./TaskItem";
+import {useDispatch, useSelector} from "react-redux";
+import {selectTasks} from "../store/tasks/selectors";
 
 
-export default function TaskList({list}) {
+export default function TaskList() {
+  const tasks = useSelector(selectTasks);
+
   return (
     <List sx={{
       overflow: 'auto',
@@ -12,7 +16,7 @@ export default function TaskList({list}) {
       justifyContent: 'start'
     }}>
       {
-        list.map((item, idx) => {
+        tasks.map((item, idx) => {
           if (!item.done) return (
             <ListItem key={idx}>
               <TaskItem task={item}/>
