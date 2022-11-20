@@ -2,17 +2,17 @@ import {ADD_TASK} from "./actions";
 
 const initialState = [
   {
-    task: 'do smth 1',
+    title: 'do smth 1',
     date: '19-11-2022',
     done: false
   },
   {
-    task: 'do smth 2',
+    title: 'do smth 2',
     date: '20-11-2022',
     done: true
   },
   {
-    task: 'do smth 3',
+    title: 'do smth 3',
     date: '21-11-2022',
     done: false
   }

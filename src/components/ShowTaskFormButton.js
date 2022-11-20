@@ -1,7 +1,15 @@
 import {Fab} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import {useDispatch} from "react-redux";
+import {useCallback} from "react";
+import {toggleShowTaskForm} from "../store/showCompsVars/actions";
 
-export default function ShowTaskFormButton({handler}) {
+export default function ShowTaskFormButton() {
+  const dispatch = useDispatch();
+
+  const handler = useCallback(()=> {
+    dispatch(toggleShowTaskForm());
+  }, [dispatch]);
 
   return (
     <Fab

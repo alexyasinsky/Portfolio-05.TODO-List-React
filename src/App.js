@@ -4,17 +4,15 @@ import './App.scss';
 
 import TaskList from "./components/TaskList";
 import ShowTaskFormButton from "./components/ShowTaskFormButton";
-import NewTaskForm from "./components/NewTaskForm";
+import TaskForm from "./components/TaskForm";
 import {useState} from "react";
+import {useSelector} from "react-redux";
+import {selectShowTaskForm} from "./store/showCompsVars/selectors";
 
 
 function App() {
-  const [showTaskForm, setShowTaskForm] = useState(false);
 
-  function toggleTaskForm(){
-    return setShowTaskForm(!showTaskForm);
-  }
-
+  const showTaskForm = useSelector(selectShowTaskForm);
 
   return (
     <Container maxWidth="md">
@@ -38,12 +36,7 @@ function App() {
           <Grid item position='relative'>
               <main>
                 <TaskList/>
-                { showTaskForm ?
-                  <NewTaskForm
-                    close={toggleTaskForm}
-                  />
-                  :
-                  <ShowTaskFormButton handler={toggleTaskForm}/>}
+                { showTaskForm ? <TaskForm/> : <ShowTaskFormButton/>}
               </main>
           </Grid>
         </Grid>
