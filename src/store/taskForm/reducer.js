@@ -2,7 +2,12 @@ import {CLEAR_CURRENT_TASK, SET_CURRENT_TASK, TOGGLE_SHOW_TASK_FORM, SET_FORM_CA
 
 const initialState = {
   showTaskForm: false,
-  currentTask: {},
+  currentTask: {
+    id: 0,
+    title: '',
+    description: '',
+    date: ''
+  },
   formCase: ''
 }
 
@@ -26,7 +31,7 @@ export const taskFormReducer = (state = initialState, {type, payload}) => {
     case CLEAR_CURRENT_TASK: 
       return {
         ...state,
-        currentTask: {}
+        currentTask: initialState.currentTask
       }
     default:
       return state;
