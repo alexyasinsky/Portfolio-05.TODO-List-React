@@ -1,0 +1,28 @@
+.taskListItem {
+
+  &__card { 
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+
+  &__content {
+    display: flex;
+    min-width: 100%;
+    min-height: 100%;
+    div {
+      min-width: 100%;
+      min-height: 100%;
+    }
+  }
+
+  &__title {
+    font-size: 20px !important;
+  }
+
+  &__date {
+    font-size: 10px !important;
+    color: gray;
+  }
+}

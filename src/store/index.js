@@ -3,12 +3,12 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 import {taskReducer} from "./tasks/reducer";
-import {showCompsVarsReducer} from "./showCompsVars/reducer";
+import {taskFormReducer} from "./taskForm/reducer";
 
 
 const rootReducer = combineReducers({
   tasks: taskReducer,
-  showCompsVars: showCompsVarsReducer
+  taskForm: taskFormReducer
 });
 
 const persistConfig = {

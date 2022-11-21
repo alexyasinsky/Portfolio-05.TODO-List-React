@@ -1,17 +1,20 @@
-import {ADD_TASK} from "./actions";
+import {ADD_TASK, EDIT_TASK, DELETE_TASK} from "./actions";
 
 const initialState = [
   {
+    id: 1,
     title: 'do smth 1',
     date: '19-11-2022',
     done: false
   },
   {
+    id: 2,
     title: 'do smth 2',
     date: '20-11-2022',
     done: true
   },
   {
+    id: 3,
     title: 'do smth 3',
     date: '21-11-2022',
     done: false
@@ -25,6 +28,12 @@ export const taskReducer = (state = initialState, {type, payload}) => {
         ...state,
         payload
       ]
+    case EDIT_TASK:
+      state[state.findIndex(item => item.id === payload.id)] = payload;
+      return state;
+    case DELETE_TASK:
+      state = state.filter(item => item.id !== payload);
+      return state;
     default:
       return state;
   }

@@ -5,9 +5,8 @@ import './App.scss';
 import TaskList from "./components/TaskList";
 import ShowTaskFormButton from "./components/ShowTaskFormButton";
 import TaskForm from "./components/TaskForm";
-import {useState} from "react";
 import {useSelector} from "react-redux";
-import {selectShowTaskForm} from "./store/showCompsVars/selectors";
+import {selectShowTaskForm} from "./store/taskForm/selectors";
 
 
 function App() {
@@ -36,7 +35,8 @@ function App() {
           <Grid item position='relative'>
               <main>
                 <TaskList/>
-                { showTaskForm ? <TaskForm/> : <ShowTaskFormButton/>}
+                { showTaskForm && <TaskForm/> } 
+                <ShowTaskFormButton/>
               </main>
           </Grid>
         </Grid>

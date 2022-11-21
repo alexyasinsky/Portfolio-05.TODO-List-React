@@ -1,6 +1,6 @@
 import {List, ListItem} from "@mui/material";
-import TaskListItem from "./TaskListItem";
-import {useDispatch, useSelector} from "react-redux";
+import TaskListItem from "./TaskListItem/TaskListItem";
+import {useSelector} from "react-redux";
 import {selectTasks} from "../store/tasks/selectors";
 
 

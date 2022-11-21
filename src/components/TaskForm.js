@@ -1,18 +1,23 @@
-import {Card, CardActions, CardContent, Fab, Grid, Paper, TextField, Typography} from "@mui/material";
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useState} from "react";
-import {useDispatch} from "react-redux";
-import {addTaskToStore} from "../store/tasks/actions";
-import {toggleShowTaskForm} from "../store/showCompsVars/actions";
-import {Login} from "@mui/icons-material";
+import {useDispatch, useSelector} from "react-redux";
+import {addTask, deleteTask, editTask} from "../store/tasks/actions";
+import {clearCurrentTask, toggleShowTaskForm} from "../store/taskForm/actions";
+import { selectCurrentTask, selectFormCase } from '../store/taskForm/selectors';
+import AgreeButton from './AgreeButton';
+import CancelButton from './CancelButton';
+import EditButton from './EditButton';
+import DeleteButton from './DeleteButton';
 
-export default function TaskForm({task}) {
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [date, setDate] = useState('');
+export default function TaskForm() {
 
+  const currentTask = useSelector(selectCurrentTask);
+  const formCase = useSelector(selectFormCase);
+  const [title, setTitle] = useState(currentTask.title);
+  const [description, setDescription] = useState(currentTask.description);
+  const [date, setDate] = useState(currentTask.date);
+  
   const dispatch = useDispatch();
 
   function changeTitleHandler(e) {
@@ -27,24 +32,40 @@ export default function TaskForm({task}) {
     setDate(e.target.value);
   }
 
-  const addButtonHandler = useCallback(() => {
-    const task = {
-      id: Math.floor(Math.random() * 10000),
-      title: title,
-      description: description,
-      date: date,
-      done: false
+  const submitButtonHandler = useCallback((e) => {
+    e.preventDefault();
+      const task = {
+        title: title,
+        description: description,
+        date: date,
+        done: false
+      }
+    if (formCase === 'add') {
+      task.id = Math.floor(Math.random() * 10000);
+      dispatch(addTask(task));
     }
-    dispatch(addTaskToStore(task));
+    if (formCase === 'edit') {
+      task.id = currentTask.id;
+      dispatch(editTask(task))
+    }
+    dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
-  }, [dispatch, title, description, date]);
+  }, [dispatch, title, description, date, formCase, currentTask]);
 
   const cancelButtonHandler = useCallback(() => {
+    dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch]);
 
+
+  const deleteButtonHandler = useCallback(() => {
+    dispatch(deleteTask(currentTask.id));
+    dispatch(clearCurrentTask());
+    dispatch(toggleShowTaskForm());
+  }, [dispatch, currentTask]);
+
   return (
-      <Card component='form' onSubmit={addButtonHandler} sx={{position: 'absolute', width: '98%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%'}}>
+      <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', width: '98%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%'}}>
           <CardContent>
             <Grid container display='flex' flexDirection='column' spacing={2}>
               <Grid item >
@@ -66,16 +87,13 @@ export default function TaskForm({task}) {
             </Grid>
           </CardContent>
           <CardActions>
-            <Grid container display='flex' justifyContent='end' spacing={2}>
+            <Grid container display='flex' justifyContent='end' spacing={5}>
               <Grid item>
-                <Fab color="success" aria-label="agree" type="submit">
-                  <CheckIcon />
-                </Fab>
+                {formCase === 'add' && <AgreeButton type='submit'/>}
+                {formCase === 'edit' && <><EditButton type='submit'/><DeleteButton handler={deleteButtonHandler}/></>}
               </Grid>
               <Grid item>
-                <Fab color="error" aria-label="cancel" onClick={cancelButtonHandler}>
-                  <CloseIcon />
-                </Fab>
+                <CancelButton handler={cancelButtonHandler}/>
               </Grid>
             </Grid>
           </CardActions>
