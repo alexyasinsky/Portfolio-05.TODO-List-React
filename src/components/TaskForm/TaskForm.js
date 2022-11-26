@@ -1,10 +1,10 @@
 import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {addTask, deleteTask, editTask} from "../../store/tasks/actions";
+import {addTask, deleteTask, editTask, toggleTask} from "../../store/tasks/actions";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
 import { selectCurrentTask, selectFormCase } from '../../store/taskForm/selectors';
-import AgreeButton from '../AgreeButton';
+import SuccessButton from '../SuccessButton';
 import CancelButton from '../CancelButton';
 import EditButton from '../EditButton';
 import DeleteButton from '../DeleteButton';
@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 
 import MyCalendar from "../MyCalendar/MyCalendar";
 import './TaskForm.scss';
+import AddButton from "../AddButton";
 
 export default function TaskForm() {
 
@@ -41,6 +42,7 @@ export default function TaskForm() {
 
   const submitButtonHandler = useCallback((e) => {
     e.preventDefault();
+      debugger
       const task = {
         title: title,
         description: description,
@@ -64,12 +66,18 @@ export default function TaskForm() {
     dispatch(toggleShowTaskForm());
   }, [dispatch]);
 
-
   const deleteButtonHandler = useCallback(() => {
     dispatch(deleteTask(currentTask.id));
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
+
+  const successButtonHandler = useCallback(()=> {
+    dispatch(toggleTask(currentTask.id));
+    dispatch(clearCurrentTask());
+    dispatch(toggleShowTaskForm());
+  }, [dispatch, currentTask]);
+
 
   useEffect(()=> {
     if (dayjs(date).unix() === dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
@@ -110,8 +118,8 @@ export default function TaskForm() {
           <CardActions>
             <Grid container display='flex' justifyContent='end' spacing={5}>
               <Grid item>
-                {formCase === 'add' && <AgreeButton type='submit'/>}
-                {formCase === 'edit' && <><EditButton type='submit'/><DeleteButton handler={deleteButtonHandler}/></>}
+                {formCase === 'add' && <AddButton type='submit'/>}
+                {formCase === 'edit' && <><SuccessButton handler={successButtonHandler}/><EditButton type='submit'/><DeleteButton handler={deleteButtonHandler}/></>}
               </Grid>
               <Grid item>
                 <CancelButton handler={cancelButtonHandler}/>

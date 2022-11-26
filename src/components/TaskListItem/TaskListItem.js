@@ -5,6 +5,7 @@ import {setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskF
 
 import './TaskListItem.scss';
 import dayjs from "dayjs";
+import {toggleTask} from "../../store/tasks/actions";
 
 export default function TaskListItem({task}) {
 
@@ -22,6 +23,12 @@ export default function TaskListItem({task}) {
   function handleChecking (e) {
     setChecked(e.target.checked);
   }
+
+  useEffect(()=> {
+    if (checked) {
+      dispatch(toggleTask(task.id));
+    }
+  }, [checked])
 
   useEffect(()=> {
     if (dayjs(task.date).unix() === dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {

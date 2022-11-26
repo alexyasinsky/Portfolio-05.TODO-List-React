@@ -6,7 +6,8 @@ const initialState = {
     id: 0,
     title: '',
     description: '',
-    date: new Date().setHours(0,0,0,0)
+    date: new Date().setHours(0,0,0,0),
+    done: false
   },
   formCase: ''
 }
