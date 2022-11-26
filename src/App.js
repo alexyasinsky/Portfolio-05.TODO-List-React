@@ -4,7 +4,7 @@ import './App.scss';
 
 import TaskList from "./components/TaskList";
 import ShowTaskFormButton from "./components/ShowTaskFormButton";
-import TaskForm from "./components/TaskForm";
+import TaskForm from "./components/TaskForm/TaskForm";
 import {useSelector} from "react-redux";
 import {selectShowTaskForm} from "./store/taskForm/selectors";
 

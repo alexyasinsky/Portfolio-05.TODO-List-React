@@ -4,19 +4,19 @@ const initialState = [
   {
     id: 1,
     title: 'do smth 1',
-    date: '19-11-2022',
+    date: '2022, 11, 19',
     done: false
   },
   {
     id: 2,
     title: 'do smth 2',
-    date: '20-11-2022',
+    date: '2022, 11, 20',
     done: true
   },
   {
     id: 3,
     title: 'do smth 3',
-    date: '21-11-2022',
+    date: '2022, 11, 21',
     done: false
   }
 ];

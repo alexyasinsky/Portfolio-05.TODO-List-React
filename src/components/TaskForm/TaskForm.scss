@@ -1,0 +1,11 @@
+.date {
+  &_today input {
+    color: orange !important;
+  }
+  &_past input {
+    color: red !important;
+  }
+  &_future input {
+    color: green !important;
+  }
+}
