@@ -4,8 +4,14 @@ import {useSelector} from "react-redux";
 import {selectTasks} from "../store/tasks/selectors";
 
 
-export default function TaskList() {
-  const tasks = useSelector(selectTasks);
+export default function TaskList({isDoneTasksShown}) {
+  let tasks = useSelector(selectTasks);
+
+  if (!isDoneTasksShown) {
+    tasks = tasks.filter((item) => {
+      if (!item.done) return item
+    })
+  }
 
   return (
     <List sx={{
@@ -17,7 +23,7 @@ export default function TaskList() {
     }}>
       {
         tasks.map((item, idx) => {
-          if (!item.done) return (
+          return (
             <ListItem key={idx}>
               <TaskListItem task={item}/>
             </ListItem>

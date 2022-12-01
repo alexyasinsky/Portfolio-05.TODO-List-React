@@ -1,4 +1,4 @@
-import {AppBar, Container, Grid, Paper, Toolbar, Typography} from '@mui/material';
+import {Container, Grid, Paper} from '@mui/material';
 
 import './App.scss';
 
@@ -8,7 +8,8 @@ import TaskForm from "./components/TaskForm/TaskForm";
 import {useDispatch, useSelector} from "react-redux";
 import {selectShowTaskForm} from "./store/taskForm/selectors";
 import {clearCurrentTask, setFormCase, toggleShowTaskForm} from "./store/taskForm/actions";
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
+import MyHeader from "./components/MyHeader/MyHeader";
 
 
 function App() {
@@ -16,34 +17,25 @@ function App() {
   const showTaskForm = useSelector(selectShowTaskForm);
 
   const dispatch = useDispatch();
+
   const showTaskFormButtonHandler = useCallback(()=> {
     dispatch(clearCurrentTask());
     dispatch(setFormCase('add'));
     dispatch(toggleShowTaskForm());
   }, [dispatch]);
 
+  const [isDoneTasksShown, setDoneTasksShown] = useState(false);
+
   return (
     <Container maxWidth="md" className='app'>
       <Paper elevation={5}>
         <Grid container direction='column'>
           <Grid item>
-            <header>
-              <AppBar position="static">
-                <Toolbar>
-                  <Typography
-                    variant="h5"
-                    noWrap
-                    component="h5"
-                  >
-                    TODO List
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-            </header>
+            <MyHeader isDoneTasksShown={isDoneTasksShown} setDoneTasksShown={setDoneTasksShown}/>
           </Grid>
           <Grid item position='relative'>
               <main>
-                <TaskList/>
+                <TaskList isDoneTasksShown={isDoneTasksShown}/>
                 {showTaskForm ?
                   <TaskForm/>
                   :

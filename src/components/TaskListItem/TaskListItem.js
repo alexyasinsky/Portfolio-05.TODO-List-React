@@ -8,10 +8,7 @@ import dayjs from "dayjs";
 import {toggleTask} from "../../store/tasks/actions";
 
 export default function TaskListItem({task}) {
-
   const dispatch = useDispatch();
-
-  const [checked, setChecked] = useState(task.done);
   const [dateClass, setDateClass] = useState('');
 
   const handler = useCallback(()=> {
@@ -20,15 +17,9 @@ export default function TaskListItem({task}) {
     dispatch(setCurrentTask(task));
   }, [dispatch, task]);
 
-  function handleChecking (e) {
-    setChecked(e.target.checked);
-  }
-
-  useEffect(()=> {
-    if (checked) {
-      dispatch(toggleTask(task.id));
-    }
-  }, [checked])
+  const handleChecking = useCallback(()=> {
+    dispatch(toggleTask(task.id));
+  }, [dispatch, task]);
 
   useEffect(()=> {
     if (dayjs(task.date).unix() === dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
@@ -42,10 +33,10 @@ export default function TaskListItem({task}) {
     }
   }, [task]);
 
-  return(
+  return (
     <Card className='taskListItem__card'>
       <CardContent className='taskListItem__content'>
-        <Checkbox onChange={handleChecking} checked={checked}/>
+        <Checkbox onChange={handleChecking} checked={task.done}/>
         <div onClick={handler}>
           <Typography className='taskListItem__title'>
             {task.title}
