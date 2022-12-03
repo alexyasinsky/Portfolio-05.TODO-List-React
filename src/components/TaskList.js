@@ -9,7 +9,7 @@ export default function TaskList({isDoneTasksShown}) {
 
   if (!isDoneTasksShown) {
     tasks = tasks.filter((item) => {
-      if (!item.done) return item
+      return item.done === false
     })
   }
 

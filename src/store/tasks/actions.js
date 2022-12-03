@@ -1,24 +1,32 @@
-export const ADD_TASK = 'TASK::ADD_TASK';
-export const EDIT_TASK = 'TASK::EDIT_TASK';
-export const DELETE_TASK = 'TASK::DELETE_TASK';
-export const TOGGLE_TASK = 'TASK::TOGGLE_TASK';
+import {onValue} from "@firebase/database";
+import {tasksRef} from "../../services/firebase";
 
-export const addTask = (task) => ({
-  type: ADD_TASK,
-  payload: task
-});
+export const SET_TASKS = 'TASKS::SET_TASKS';
+export const CLEAR_TASKS = 'TASKS::CLEAR_TASKS';
 
-export const editTask = (task) => ({
-  type: EDIT_TASK,
-  payload: task
-});
+const setTasks = (tasks) => ({
+  type: SET_TASKS,
+  payload: tasks
+})
 
-export const deleteTask = (id) => ({
-  type: DELETE_TASK,
-  payload: id
-});
+const clearTasks = () => ({
+  type: CLEAR_TASKS,
+})
 
-export const toggleTask = (id) => ({
-  type: TOGGLE_TASK,
-  payload: id
-});
+let unsubscribe;
+
+export const initTasksTrack = () => (dispatch) => {
+  const unsubscribeTasks = onValue(tasksRef, snapshot => {
+    const tasks = snapshot.val();
+    const tasksArray = Object.values(tasks);
+    dispatch(setTasks(tasksArray));
+  });
+  unsubscribe = () => {
+    unsubscribeTasks();
+  }
+};
+
+export const stopTasksTrack = () => (dispatch) => {
+  dispatch(clearTasks())
+  unsubscribe();
+}

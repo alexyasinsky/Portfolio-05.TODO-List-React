@@ -1,7 +1,6 @@
 import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {addTask, deleteTask, editTask, toggleTask} from "../../store/tasks/actions";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
 import { selectCurrentTask, selectFormCase } from '../../store/taskForm/selectors';
 import SuccessButton from '../SuccessButton';
@@ -9,20 +8,22 @@ import CancelButton from '../CancelButton';
 import EditButton from '../EditButton';
 import DeleteButton from '../DeleteButton';
 import dayjs from "dayjs";
+import {push, set, update, remove} from "@firebase/database";
 
 import MyCalendar from "../MyCalendar/MyCalendar";
 import './TaskForm.scss';
 import AddButton from "../AddButton";
+import {getTaskRefById, tasksRef} from "../../services/firebase";
 
 export default function TaskForm() {
 
   const currentTask = useSelector(selectCurrentTask);
+  currentTask.date = new Date(currentTask.date);
   const formCase = useSelector(selectFormCase);
 
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
-  const [date, setDate] = useState(new Date(currentTask.date));
-
+  const [date, setDate] = useState(currentTask.date);
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
   
@@ -40,22 +41,20 @@ export default function TaskForm() {
     setCalendarShown(previous => !previous);
   }
 
-  const submitButtonHandler = useCallback((e) => {
+  const submitButtonHandler = useCallback(async (e) => {
     e.preventDefault();
-      debugger
       const task = {
         title: title,
         description: description,
-        date: date,
+        date: dayjs(date).valueOf(),
         done: false
       }
     if (formCase === 'add') {
-      task.id = Math.floor(Math.random() * 10000);
-      dispatch(addTask(task));
+      task.id = push(tasksRef).key;
+      await set(getTaskRefById(task.id), task);
     }
     if (formCase === 'edit') {
-      task.id = currentTask.id;
-      dispatch(editTask(task))
+      await update(getTaskRefById(currentTask.id), task);
     }
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
@@ -67,29 +66,32 @@ export default function TaskForm() {
   }, [dispatch]);
 
   const deleteButtonHandler = useCallback(() => {
-    dispatch(deleteTask(currentTask.id));
+    remove(getTaskRefById(currentTask.id));
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 
-  const successButtonHandler = useCallback(()=> {
-    dispatch(toggleTask(currentTask.id));
+  const successButtonHandler = useCallback(async ()=> {
+    await update(getTaskRefById(currentTask.id), { done: !currentTask.done });
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 
 
   useEffect(()=> {
-    if (dayjs(date).unix() === dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
+    const msFromUnix = dayjs(date).valueOf();
+    const today = dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf();
+    if (msFromUnix === today) {
       setDateClass('date_today');
     }
-    if (dayjs(date).unix() < dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
+    if (msFromUnix < today) {
       setDateClass('date_past')
     }
-    if (dayjs(date).unix() > dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
+    if (msFromUnix > today) {
       setDateClass('date_future')
     }
   }, [date]);
+
   return (
       <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
           <CardContent>
@@ -108,6 +110,7 @@ export default function TaskForm() {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField label="date" variant="outlined" value={dayjs(date).format('DD-MM-YYYY')} sx={{width: 1}} InputProps={{readOnly: true}} onClick={toggleCalendarShow} className={dateClass}/>
+
                 </Grid>
               </Grid>
               <Grid item>

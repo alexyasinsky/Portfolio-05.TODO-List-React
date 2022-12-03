@@ -19,7 +19,8 @@ const app = initializeApp(firebaseConfig);
 
 export const db = getDatabase(app);
 
-// export const chatsRef = ref(db, "chats");
+export const tasksRef = ref(db, "tasks");
+export const getTaskRefById = (id) => ref(db, `tasks/${id}`);
 // export const messagesRef = ref(db, 'messages');
 // export const getUsersRefById = id => ref(db, `users/${id}`);
 // export const getUserNickNameRefById = id => ref(db, `users/${id}/nickname`);

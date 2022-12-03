@@ -8,8 +8,9 @@ import TaskForm from "./components/TaskForm/TaskForm";
 import {useDispatch, useSelector} from "react-redux";
 import {selectShowTaskForm} from "./store/taskForm/selectors";
 import {clearCurrentTask, setFormCase, toggleShowTaskForm} from "./store/taskForm/actions";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import MyHeader from "./components/MyHeader/MyHeader";
+import {initTasksTrack, stopTasksTrack} from "./store/tasks/actions";
 
 
 function App() {
@@ -22,6 +23,13 @@ function App() {
     dispatch(clearCurrentTask());
     dispatch(setFormCase('add'));
     dispatch(toggleShowTaskForm());
+  }, [dispatch]);
+
+  useEffect(()=> {
+    dispatch(initTasksTrack());
+    return () => {
+      dispatch(stopTasksTrack());
+    }
   }, [dispatch]);
 
   const [isDoneTasksShown, setDoneTasksShown] = useState(false);

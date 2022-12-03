@@ -8,7 +8,7 @@ import {taskFormReducer} from "./taskForm/reducer";
 
 const rootReducer = combineReducers({
   tasks: taskReducer,
-  taskForm: taskFormReducer
+  taskForm: taskFormReducer,
 });
 
 const persistConfig = {

@@ -5,9 +5,13 @@ import {setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskF
 
 import './TaskListItem.scss';
 import dayjs from "dayjs";
-import {toggleTask} from "../../store/tasks/actions";
+import {update} from "@firebase/database";
+import {getTaskRefById} from "../../services/firebase";
 
 export default function TaskListItem({task}) {
+
+  task.date = new Date(task.date);
+
   const dispatch = useDispatch();
   const [dateClass, setDateClass] = useState('');
 
@@ -17,18 +21,20 @@ export default function TaskListItem({task}) {
     dispatch(setCurrentTask(task));
   }, [dispatch, task]);
 
-  const handleChecking = useCallback(()=> {
-    dispatch(toggleTask(task.id));
-  }, [dispatch, task]);
+  const handleChecking = useCallback(async ()=> {
+    await update(getTaskRefById(task.id), { done: !task.done });
+  }, [task]);
 
   useEffect(()=> {
-    if (dayjs(task.date).unix() === dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
+    const msFromUnix = dayjs(task.date).valueOf();
+    const today = dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf();
+    if (msFromUnix === today) {
       setDateClass('taskListItem__date_today');
     }
-    if (dayjs(task.date).unix() < dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
+    if (msFromUnix < today) {
       setDateClass('taskListItem__date_past')
     }
-    if (dayjs(task.date).unix() > dayjs().hour(0).minute(0).second(0).millisecond(0).unix()) {
+    if (msFromUnix > today) {
       setDateClass('taskListItem__date_future')
     }
   }, [task]);
