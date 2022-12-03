@@ -2,7 +2,8 @@
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { getDatabase, ref } from "firebase/database";
+import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCyJ4kTh2apV5vvbS9xDbFmzL3fPDof8pI",
@@ -18,9 +19,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const db = getDatabase(app);
+export const storage = getStorage(app);
 
-export const tasksRef = ref(db, "tasks");
-export const getTaskRefById = (id) => ref(db, `tasks/${id}`);
+
+
 // export const messagesRef = ref(db, 'messages');
 // export const getUsersRefById = id => ref(db, `users/${id}`);
 // export const getUserNickNameRefById = id => ref(db, `users/${id}/nickname`);

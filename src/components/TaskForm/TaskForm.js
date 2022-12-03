@@ -1,5 +1,5 @@
 import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
 import { selectCurrentTask, selectFormCase } from '../../store/taskForm/selectors';
@@ -13,7 +13,9 @@ import {push, set, update, remove} from "@firebase/database";
 import MyCalendar from "../MyCalendar/MyCalendar";
 import './TaskForm.scss';
 import AddButton from "../AddButton";
-import {getTaskRefById, tasksRef} from "../../services/firebase";
+import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
+import { uploadBytes } from "firebase/storage";
+import {getFileNameRefById} from "../../services/firebase/storageRefs";
 
 export default function TaskForm() {
 
@@ -52,6 +54,10 @@ export default function TaskForm() {
     if (formCase === 'add') {
       task.id = push(tasksRef).key;
       await set(getTaskRefById(task.id), task);
+      const file = fileRef.current.files[0];
+      const ref = getFileNameRefById(task.id, file.name);
+
+      await uploadBytes(ref, file)
     }
     if (formCase === 'edit') {
       await update(getTaskRefById(currentTask.id), task);
@@ -77,6 +83,7 @@ export default function TaskForm() {
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 
+  const fileRef = useRef(null);
 
   useEffect(()=> {
     const msFromUnix = dayjs(date).valueOf();
@@ -110,11 +117,13 @@ export default function TaskForm() {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField label="date" variant="outlined" value={dayjs(date).format('DD-MM-YYYY')} sx={{width: 1}} InputProps={{readOnly: true}} onClick={toggleCalendarShow} className={dateClass}/>
-
                 </Grid>
               </Grid>
               <Grid item>
                 <TextField label="description" sx={{width: 1}} variant="outlined" value={description} onChange={changeDescriptionHandler}/>
+              </Grid>
+              <Grid item>
+                <input type="file" id="input" multiple ref={fileRef}/>
               </Grid>
             </Grid>
           </CardContent>
