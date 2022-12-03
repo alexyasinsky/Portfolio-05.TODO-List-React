@@ -1,5 +1,5 @@
 import {onValue} from "@firebase/database";
-import {tasksRef} from "../../services/firebase";
+import {tasksRef} from "../../services/firebase/dbRefs";
 
 export const SET_TASKS = 'TASKS::SET_TASKS';
 export const CLEAR_TASKS = 'TASKS::CLEAR_TASKS';

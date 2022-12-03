@@ -6,7 +6,7 @@ import {setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskF
 import './TaskListItem.scss';
 import dayjs from "dayjs";
 import {update} from "@firebase/database";
-import {getTaskRefById} from "../../services/firebase";
+import {getTaskRefById} from "../../services/firebase/dbRefs";
 
 export default function TaskListItem({task}) {
 
