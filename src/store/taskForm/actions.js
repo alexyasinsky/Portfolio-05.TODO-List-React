@@ -9,12 +9,10 @@ export const toggleShowTaskForm = () => ({
   type: TOGGLE_SHOW_TASK_FORM
 });
 
-export const setFormCase = (formCase) => {
-  return ({
+export const setFormCase = (formCase) => ({
     type: SET_FORM_CASE,
     payload: formCase
-  })
-}
+})
 
 
 export const setCurrentTask = (task) => ({

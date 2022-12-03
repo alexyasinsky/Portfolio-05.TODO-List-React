@@ -16,6 +16,7 @@ import AddButton from "../AddButton";
 import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
 import { uploadBytes } from "firebase/storage";
 import {getFileNameRefById} from "../../services/firebase/storageRefs";
+import FileList from "../FileList";
 
 export default function TaskForm() {
 
@@ -26,6 +27,7 @@ export default function TaskForm() {
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
+  // const [files, setFiles] = useState(currentTask.files);
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
   
@@ -49,16 +51,23 @@ export default function TaskForm() {
         title: title,
         description: description,
         date: dayjs(date).valueOf(),
+        // files: files,
         done: false
       }
+      const file = fileRef.current.files[0];
     if (formCase === 'add') {
       task.id = push(tasksRef).key;
-      const file = fileRef.current.files[0];
-      const ref = getFileNameRefById(task.id, file.name);
-      await uploadBytes(ref, file);
+      if (file) {
+        const ref = getFileNameRefById(task.id, file.name);
+        await uploadBytes(ref, file);
+      }
       await set(getTaskRefById(task.id), task);
     }
     if (formCase === 'edit') {
+      if (file) {
+        const ref = getFileNameRefById(currentTask.id, file.name);
+        await uploadBytes(ref, file);
+      }
       await update(getTaskRefById(currentTask.id), task);
     }
     dispatch(clearCurrentTask());
@@ -123,6 +132,9 @@ export default function TaskForm() {
               </Grid>
               <Grid item>
                 <input type="file" id="input" multiple ref={fileRef}/>
+              </Grid>
+              <Grid item>
+                {currentTask.files?.length > 0 && <FileList files={currentTask.files}/> }
               </Grid>
             </Grid>
           </CardContent>
