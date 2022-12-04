@@ -1,10 +1,10 @@
 import {Link, List, ListItem} from "@mui/material";
 
-export default function ({files}) {
+export default function ({fileLinks}) {
   return (
     <List>
       {
-        files.map((item, idx) => {
+        fileLinks.map((item, idx) => {
           return (
             <ListItem key={idx}>
               <Link href="#">{item}</Link>

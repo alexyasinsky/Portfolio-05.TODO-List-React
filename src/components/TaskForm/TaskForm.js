@@ -1,4 +1,4 @@
-import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
+import {Button, Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
@@ -14,24 +14,39 @@ import MyCalendar from "../MyCalendar/MyCalendar";
 import './TaskForm.scss';
 import AddButton from "../AddButton";
 import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
-import { uploadBytes } from "firebase/storage";
-import {getFileNameRefById} from "../../services/firebase/storageRefs";
 import FileList from "../FileList";
+import AddingFileForm from "../AddingFileForm/AddingFileForm";
 
 export default function TaskForm() {
 
   const currentTask = useSelector(selectCurrentTask);
   currentTask.date = new Date(currentTask.date);
   const formCase = useSelector(selectFormCase);
+  let id = '';
+
+  if (formCase === 'add') {
+    id = push(tasksRef).key;
+  }
+  if (formCase === 'edit') {
+    id = currentTask.id;
+  }
 
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
-  // const [files, setFiles] = useState(currentTask.files);
+  const [fileLinks, setFileLinks] = useState(currentTask.fileLinks || {});
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
+  const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
   
   const dispatch = useDispatch();
+
+  let fileLinksArray = [];
+
+  useEffect(() => {
+    fileLinksArray = Object.values(fileLinksArray);
+    console.log(fileLinksArray);
+  }, [fileLinks])
 
   function changeTitleHandler(e) {
     setTitle(e.target.value);
@@ -45,30 +60,30 @@ export default function TaskForm() {
     setCalendarShown(previous => !previous);
   }
 
+  function toggleAddingFileFormShow() {
+    setAddingFileFormShow(previous => !previous);
+  }
+
+  function addingFileLinksToTask(files) {
+    setFileLinks(previous => Object.assign(previous, files));
+  }
+
   const submitButtonHandler = useCallback(async (e) => {
     e.preventDefault();
       const task = {
+        id: id,
         title: title,
         description: description,
         date: dayjs(date).valueOf(),
-        // files: files,
+        fileLinks: fileLinks,
         done: false
       }
-      const file = fileRef.current.files[0];
+      debugger
     if (formCase === 'add') {
-      task.id = push(tasksRef).key;
-      if (file) {
-        const ref = getFileNameRefById(task.id, file.name);
-        await uploadBytes(ref, file);
-      }
-      await set(getTaskRefById(task.id), task);
+      await set(getTaskRefById(id), task);
     }
     if (formCase === 'edit') {
-      if (file) {
-        const ref = getFileNameRefById(currentTask.id, file.name);
-        await uploadBytes(ref, file);
-      }
-      await update(getTaskRefById(currentTask.id), task);
+      await update(getTaskRefById(id), task);
     }
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
@@ -91,8 +106,6 @@ export default function TaskForm() {
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 
-  const fileRef = useRef(null);
-
   useEffect(()=> {
     const msFromUnix = dayjs(date).valueOf();
     const today = dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf();
@@ -108,47 +121,48 @@ export default function TaskForm() {
   }, [date]);
 
   return (
-      <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-          <CardContent>
-            <Grid container display='flex' flexDirection='column' spacing={2}>
-              <Grid position='relative'>
-                { isCalendarShown && <MyCalendar value={date} setValue={(d) => setDate(d)} close={toggleCalendarShow}/> }
-              </Grid>
-              <Grid item >
-                <Typography variant='h6' sx={{width: 1}}>
-                  Task
-                </Typography>
-              </Grid>
-              <Grid item container spacing={2}>
-                <Grid item xs={8}>
-                  <TextField label="title" variant="outlined" value={title} onChange={changeTitleHandler} sx={{width: 1}} required={true}/>
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField label="date" variant="outlined" value={dayjs(date).format('DD-MM-YYYY')} sx={{width: 1}} InputProps={{readOnly: true}} onClick={toggleCalendarShow} className={dateClass}/>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <TextField label="description" sx={{width: 1}} variant="outlined" value={description} onChange={changeDescriptionHandler}/>
-              </Grid>
-              <Grid item>
-                <input type="file" id="input" multiple ref={fileRef}/>
-              </Grid>
-              <Grid item>
-                {currentTask.files?.length > 0 && <FileList files={currentTask.files}/> }
-              </Grid>
+    <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+      <CardContent sx={{position: 'relative'}}>
+        <Grid container display='flex' flexDirection='column' spacing={2}>
+          <Grid position='relative'>
+            { isCalendarShown && <MyCalendar value={date} setValue={(d) => setDate(d)} close={toggleCalendarShow}/> }
+          </Grid>
+          <Grid item >
+            <Typography variant='h6' sx={{width: 1}}>
+              Task
+            </Typography>
+          </Grid>
+          <Grid item container spacing={2}>
+            <Grid item xs={8}>
+              <TextField label="title" variant="outlined" value={title} onChange={changeTitleHandler} sx={{width: 1}} required={true}/>
             </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid container display='flex' justifyContent='end' spacing={5}>
-              <Grid item>
-                {formCase === 'add' && <AddButton type='submit'/>}
-                {formCase === 'edit' && <><SuccessButton handler={successButtonHandler}/><EditButton type='submit'/><DeleteButton handler={deleteButtonHandler}/></>}
-              </Grid>
-              <Grid item>
-                <CancelButton handler={cancelButtonHandler}/>
-              </Grid>
+            <Grid item xs={4}>
+              <TextField label="date" variant="outlined" value={dayjs(date).format('DD-MM-YYYY')} sx={{width: 1}} InputProps={{readOnly: true}} onClick={toggleCalendarShow} className={dateClass}/>
             </Grid>
-          </CardActions>
-      </Card>
+          </Grid>
+          <Grid item>
+            <TextField label="description" sx={{width: 1}} variant="outlined" value={description} onChange={changeDescriptionHandler}/>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" onClick={toggleAddingFileFormShow}>Add files</Button>
+          </Grid>
+          <Grid item>
+            {fileLinksArray.length > 0 && <FileList files={fileLinksArray}/> }
+          </Grid>
+        </Grid>
+        { isAddingFileFormShown && <AddingFileForm id={id} close={toggleAddingFileFormShow} addLinks={addingFileLinksToTask}/>}
+      </CardContent>
+      <CardActions>
+        <Grid container display='flex' justifyContent='end' spacing={5}>
+          <Grid item>
+            {formCase === 'add' && <AddButton type='submit'/>}
+            {formCase === 'edit' && <><SuccessButton handler={successButtonHandler}/><EditButton type='submit'/><DeleteButton handler={deleteButtonHandler}/></>}
+          </Grid>
+          <Grid item>
+            <CancelButton handler={cancelButtonHandler}/>
+          </Grid>
+        </Grid>
+      </CardActions>
+    </Card>
   )
 }

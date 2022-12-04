@@ -1,0 +1,12 @@
+.fileForm {
+  position: absolute;
+  height: 50px;
+  min-width: 500px;
+  z-index: 1200;
+  border: 1px solid black;
+  padding: 3%;
+  display: flex;
+  justify-content: space-between;
+  bottom: 20%;
+  left: 15%;
+}
