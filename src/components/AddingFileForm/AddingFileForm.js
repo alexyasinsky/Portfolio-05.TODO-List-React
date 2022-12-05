@@ -1,12 +1,13 @@
-import {Button, Card, CardActions, CardContent} from "@mui/material";
+import {Card, CardActions, CardContent} from "@mui/material";
 import './AddingFileForm.scss';
 import CancelButton from "../CancelButton";
 import AddButton from "../AddButton";
 import {getFileNameRefById} from "../../services/firebase/storageRefs";
 import {uploadBytes} from "firebase/storage";
 import {useRef} from "react";
+import { getDownloadURL } from "firebase/storage";
 
-export default function AddingFileForm({id, close, addLinks}) {
+export default function AddingFileForm({id, close, addFileLinks}) {
 
   const fileRef = useRef(null);
 
@@ -14,11 +15,12 @@ export default function AddingFileForm({id, close, addLinks}) {
     close();
     const fileLinks = {};
     for (const file of fileRef.current.files) {
-      const fileName = file.name;
-      const ref = getFileNameRefById(id, fileName);
-      Object.assign(fileLinks, { [fileName]: ref});
+      const ref = getFileNameRefById(id, file.name);
       await uploadBytes(ref, file);
+      const url = await getDownloadURL(getFileNameRefById(id, file.name));
+      Object.assign(fileLinks, {[file.name]: url})
     }
+    addFileLinks(fileLinks);
   }
 
   return (

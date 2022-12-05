@@ -1,4 +1,4 @@
-import {CLEAR_CURRENT_TASK, SET_CURRENT_TASK, TOGGLE_SHOW_TASK_FORM, SET_FORM_CASE} from "./actions";
+import {CLEAR_CURRENT_TASK, SET_CURRENT_TASK, TOGGLE_SHOW_TASK_FORM, SET_FORM_CASE, SET_CURRENT_TASK_FILE_LIST} from "./actions";
 
 const initialState = {
   showTaskForm: false,
@@ -34,6 +34,9 @@ export const taskFormReducer = (state = initialState, {type, payload}) => {
         ...state,
         currentTask: initialState.currentTask
       }
+    case SET_CURRENT_TASK_FILE_LIST:
+      state.currentTask.fileList = payload;
+      return state;
     default:
       return state;
   }

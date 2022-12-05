@@ -1,5 +1,5 @@
 import {Button, Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
 import { selectCurrentTask, selectFormCase } from '../../store/taskForm/selectors';
@@ -16,6 +16,7 @@ import AddButton from "../AddButton";
 import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
 import FileList from "../FileList";
 import AddingFileForm from "../AddingFileForm/AddingFileForm";
+import {getFileList} from "../../store/taskForm/actions";
 
 export default function TaskForm() {
 
@@ -31,22 +32,17 @@ export default function TaskForm() {
     id = currentTask.id;
   }
 
+  console.log(currentTask);
+
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
-  const [fileLinks, setFileLinks] = useState(currentTask.fileLinks || {});
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
   const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
   
   const dispatch = useDispatch();
 
-  let fileLinksArray = [];
-
-  useEffect(() => {
-    fileLinksArray = Object.values(fileLinksArray);
-    console.log(fileLinksArray);
-  }, [fileLinks])
 
   function changeTitleHandler(e) {
     setTitle(e.target.value);
@@ -64,10 +60,6 @@ export default function TaskForm() {
     setAddingFileFormShow(previous => !previous);
   }
 
-  function addingFileLinksToTask(files) {
-    setFileLinks(previous => Object.assign(previous, files));
-  }
-
   const submitButtonHandler = useCallback(async (e) => {
     e.preventDefault();
       const task = {
@@ -75,7 +67,6 @@ export default function TaskForm() {
         title: title,
         description: description,
         date: dayjs(date).valueOf(),
-        fileLinks: fileLinks,
         done: false
       }
       debugger
@@ -87,7 +78,7 @@ export default function TaskForm() {
     }
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
-  }, [dispatch, title, description, date, formCase, currentTask]);
+  }, [dispatch, title, description, date, formCase, id]);
 
   const cancelButtonHandler = useCallback(() => {
     dispatch(clearCurrentTask());
@@ -120,6 +111,10 @@ export default function TaskForm() {
     }
   }, [date]);
 
+  useEffect(() => {
+    dispatch(getFileList(id));
+  }, [dispatch, id])
+
   return (
     <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
       <CardContent sx={{position: 'relative'}}>
@@ -147,10 +142,10 @@ export default function TaskForm() {
             <Button variant="contained" onClick={toggleAddingFileFormShow}>Add files</Button>
           </Grid>
           <Grid item>
-            {fileLinksArray.length > 0 && <FileList files={fileLinksArray}/> }
+            <FileList/>
           </Grid>
         </Grid>
-        { isAddingFileFormShown && <AddingFileForm id={id} close={toggleAddingFileFormShow} addLinks={addingFileLinksToTask}/>}
+        { isAddingFileFormShown && <AddingFileForm id={id} close={toggleAddingFileFormShow}/>}
       </CardContent>
       <CardActions>
         <Grid container display='flex' justifyContent='end' spacing={5}>
