@@ -1,16 +1,17 @@
 import {List} from "@mui/material";
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentTaskFileList } from '../store/taskForm/selectors';
 import FileListItem from './FileListItem';
+import { selectCurrentTaskFilesData } from '../store/taskForm/selectors';
 
 
-export default function FileList() {
-  const fileList = useSelector(selectCurrentTaskFileList);
-  if (fileList) {
+export default function FileList({files}) {
+  debugger
+  console.log(files);
     return (
       <List>
         {
-          fileList.map(file => {
+          files.map(file => {
             return (
               <FileListItem file={file}/>
             )
@@ -18,7 +19,4 @@ export default function FileList() {
         }
       </List>
     )
-  } else {
-    return
-  }
 }

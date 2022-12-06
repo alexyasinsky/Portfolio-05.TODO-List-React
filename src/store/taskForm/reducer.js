@@ -1,4 +1,4 @@
-import {CLEAR_CURRENT_TASK, SET_CURRENT_TASK, TOGGLE_SHOW_TASK_FORM, SET_FORM_CASE, SET_CURRENT_TASK_FILE_LIST} from "./actions";
+import {CLEAR_CURRENT_TASK, SET_CURRENT_TASK, TOGGLE_SHOW_TASK_FORM, SET_FORM_CASE, ADD_FILE_DATA_TO_CURRENT_TASK} from "./actions";
 
 const initialState = {
   showTaskForm: false,
@@ -7,7 +7,8 @@ const initialState = {
     title: '',
     description: '',
     date: new Date().setHours(0,0,0,0),
-    done: false
+    done: false,
+    filesData: []
   },
   formCase: ''
 }
@@ -27,15 +28,22 @@ export const taskFormReducer = (state = initialState, {type, payload}) => {
     case SET_CURRENT_TASK:
       return {
         ...state,
-        currentTask: {...payload}
+        currentTask: Object.assign(state.currentTask, payload)
       }
     case CLEAR_CURRENT_TASK: 
       return {
         ...state,
-        currentTask: initialState.currentTask
+        currentTask: {
+          id: 0,
+          title: '',
+          description: '',
+          date: new Date().setHours(0,0,0,0),
+          done: false,
+          filesData: []
+        }
       }
-    case SET_CURRENT_TASK_FILE_LIST:
-      state.currentTask.fileList = payload;
+    case ADD_FILE_DATA_TO_CURRENT_TASK:
+      state.currentTask.filesData.push(payload);
       return state;
     default:
       return state;
