@@ -1,7 +1,7 @@
 import {CardContent, Typography, Card, Checkbox} from "@mui/material";
 import {useDispatch} from "react-redux";
 import {useCallback, useEffect, useState} from "react";
-import {getFilesOfCurrentTask, setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskForm/actions";
+import {setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskForm/actions";
 
 import './TaskListItem.scss';
 import dayjs from "dayjs";
@@ -19,7 +19,6 @@ export default function TaskListItem({task}) {
     dispatch(setFormCase('edit'));
     dispatch(toggleShowTaskForm());
     dispatch(setCurrentTask(task));
-    dispatch(getFilesOfCurrentTask(task.id))
   }, [dispatch, task]);
 
   const handleChecking = useCallback(async ()=> {

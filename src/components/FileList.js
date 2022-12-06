@@ -5,18 +5,19 @@ import FileListItem from './FileListItem';
 import { selectCurrentTaskFilesData } from '../store/taskForm/selectors';
 
 
-export default function FileList({files}) {
-  debugger
+export default function FileList() {
+  const files = useSelector(selectCurrentTaskFilesData);
+
   console.log(files);
-    return (
-      <List>
-        {
-          files.map(file => {
-            return (
-              <FileListItem file={file}/>
-            )
-          })
-        }
-      </List>
-    )
+    // return (
+    //   <List>
+    //     {
+    //       files.map(file => {
+    //         return (
+    //           <FileListItem file={file}/>
+    //         )
+    //       })
+    //     }
+    //   </List>
+    // )
 }

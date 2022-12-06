@@ -16,6 +16,7 @@ import AddButton from "../AddButton";
 import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
 import FileList from "../FileList";
 import AddingFileForm from "../AddingFileForm/AddingFileForm";
+import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
 
 export default function TaskForm() {
 
@@ -34,9 +35,11 @@ export default function TaskForm() {
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
+  // const [files, setFiles] = useState(currentTask.filesData);
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
   const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
+  
   // const [isFileListShown, setFileListShown] = useState(false);
   
   const dispatch = useDispatch();
@@ -108,9 +111,9 @@ export default function TaskForm() {
     }
   }, [date]);
 
-  // useEffect(()=> {
-  //   if (currentTask.filesData.length > 0) setFileListShown(true);
-  // }, [currentTask])
+  useEffect(()=> {
+    dispatch(getFilesOfCurrentTask(currentTask.id));
+  },  [dispatch, currentTask])
 
   return (
     <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
@@ -139,7 +142,7 @@ export default function TaskForm() {
             <Button variant="contained" onClick={toggleAddingFileFormShow}>Add files</Button>
           </Grid>
           <Grid item>
-            <FileList files={currentTask.filesData}/>
+            <FileList/>
           </Grid>
         </Grid>
         { isAddingFileFormShown && <AddingFileForm id={id} close={toggleAddingFileFormShow}/>}
