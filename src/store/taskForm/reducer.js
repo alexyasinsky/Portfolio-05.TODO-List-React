@@ -42,9 +42,23 @@ export const taskFormReducer = (state = initialState, {type, payload}) => {
           filesData: []
         }
       }
-    case ADD_FILE_DATA_TO_CURRENT_TASK:
-      state.currentTask.filesData.push(payload);
-      return state;
+    // case ADD_FILE_DATA_TO_CURRENT_TASK:
+    //   state.currentTask.filesData = [...payload];
+    //   state.currentTask.filesData.push(payload);
+    //   return state;
+
+        case ADD_FILE_DATA_TO_CURRENT_TASK:
+      // state.currentTask.filesData = [...payload];
+      // state.currentTask.filesData.push(payload);
+      // return state;
+      const task = {
+        ...state.currentTask,
+        filesData: payload
+      };
+      return {
+        ...state,
+        currentTask: task
+      }
     default:
       return state;
   }

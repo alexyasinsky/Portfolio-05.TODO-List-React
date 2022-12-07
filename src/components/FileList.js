@@ -1,23 +1,23 @@
-import {List} from "@mui/material";
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import FileListItem from './FileListItem';
+import {List, Link, ListItem} from "@mui/material";
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentTaskFilesData } from '../store/taskForm/selectors';
+import { getFilesOfCurrentTask } from '../store/taskForm/actions';
 
 
 export default function FileList() {
   const files = useSelector(selectCurrentTaskFilesData);
-
-  console.log(files);
-    // return (
-    //   <List>
-    //     {
-    //       files.map(file => {
-    //         return (
-    //           <FileListItem file={file}/>
-    //         )
-    //       })
-    //     }
-    //   </List>
-    // )
+  return (
+    <List>
+      {
+        files.map((file, idx) => {
+          return (
+            <ListItem key={idx}>
+              <Link href={file.url}>${file.data.name}</Link>
+            </ListItem>
+          )
+        })
+      }
+    </List>
+  )
 }

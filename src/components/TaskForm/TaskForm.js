@@ -111,9 +111,9 @@ export default function TaskForm() {
     }
   }, [date]);
 
-  useEffect(()=> {
-    dispatch(getFilesOfCurrentTask(currentTask.id));
-  },  [dispatch, currentTask])
+    useEffect(()=> {
+      dispatch(getFilesOfCurrentTask());
+  },  [dispatch])
 
   return (
     <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
