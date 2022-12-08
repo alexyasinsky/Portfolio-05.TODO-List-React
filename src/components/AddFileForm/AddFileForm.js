@@ -1,14 +1,13 @@
 import {Card, CardActions, CardContent} from "@mui/material";
-import './AddingFileForm.scss';
-import CancelButton from "../CancelButton";
-import AddButton from "../AddButton";
+import './AddFileForm.scss';
 import {getFileNameRefById} from "../../services/firebase/storageRefs";
 import {uploadBytes} from "firebase/storage";
 import {useRef} from "react";
 import {useDispatch} from "react-redux";
 import {getFilesOfCurrentTask} from "../../store/taskForm/actions";
+import MyButton from "../MyButton/MyButton";
 
-export default function AddingFileForm({id, close}) {
+export default function AddFileForm({id, close}) {
 
   const fileRef = useRef(null);
 
@@ -17,6 +16,7 @@ export default function AddingFileForm({id, close}) {
   async function addFiles() {
     close();
     for (const file of fileRef.current.files) {
+      debugger
       await uploadBytes(getFileNameRefById(id, file.name), file);
     }
     dispatch(getFilesOfCurrentTask(id));
@@ -28,8 +28,8 @@ export default function AddingFileForm({id, close}) {
         <input type="file" id="input" multiple ref={fileRef}/>
       </CardContent>
       <CardActions>
-        <AddButton handler={addFiles}/>
-        <CancelButton handler={close}/>
+        <MyButton purpose='add' handler={addFiles}/>
+        <MyButton purpose='cancel' handler={close}/>
       </CardActions>
     </Card>
 

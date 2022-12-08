@@ -36,7 +36,6 @@ export const getFilesOfCurrentTask = (id) => async (dispatch) => {
     filesData.push({data, url});
   }
   dispatch(addFileDataToCurrentTask(filesData));
-
 }
 
 const addFileDataToCurrentTask = (data) => ({

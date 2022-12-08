@@ -3,7 +3,6 @@ import {Container, Grid, Paper} from '@mui/material';
 import './App.scss';
 
 import TaskList from "./components/TaskList";
-import AddButton from "./components/AddButton";
 import TaskForm from "./components/TaskForm/TaskForm";
 import {useDispatch, useSelector} from "react-redux";
 import {selectShowTaskForm} from "./store/taskForm/selectors";
@@ -11,6 +10,7 @@ import {clearCurrentTask, setFormCase, toggleShowTaskForm} from "./store/taskFor
 import {useCallback, useEffect, useState} from "react";
 import MyHeader from "./components/MyHeader/MyHeader";
 import {initTasksTrack, stopTasksTrack} from "./store/tasks/actions";
+import MyButton from "./components/MyButton/MyButton";
 
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
                   <TaskForm/>
                   :
                   <div className='showFormButton'>
-                    <AddButton handler={showTaskFormButtonHandler} />
+                    <MyButton purpose='add' handler={showTaskFormButtonHandler}/>
                   </div>
                 }
               </main>

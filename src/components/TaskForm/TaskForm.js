@@ -1,37 +1,26 @@
-import {Button, Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
+import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
 import { selectCurrentTask, selectFormCase } from '../../store/taskForm/selectors';
-import SuccessButton from '../SuccessButton';
-import CancelButton from '../CancelButton';
-import EditButton from '../EditButton';
-import DeleteButton from '../DeleteButton';
 import dayjs from "dayjs";
 import {push, set, update, remove} from "@firebase/database";
 
 import MyCalendar from "../MyCalendar/MyCalendar";
 import './TaskForm.scss';
-import AddButton from "../AddButton";
 import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
 import FileList from "../FileList";
-import AddingFileForm from "../AddingFileForm/AddingFileForm";
+import AddFileForm from "../AddFileForm/AddFileForm";
 import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
+import MyButton from "../MyButton/MyButton";
 
 export default function TaskForm() {
 
   const currentTask = useSelector(selectCurrentTask);
   currentTask.date = new Date(currentTask.date);
   const formCase = useSelector(selectFormCase);
-  let id = '';
 
-  if (formCase === 'add') {
-    id = push(tasksRef).key;
-  }
-  if (formCase === 'edit') {
-    id = currentTask.id;
-  }
-
+  const [id, setId] = useState(currentTask.id);
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
@@ -39,7 +28,12 @@ export default function TaskForm() {
   const [dateClass, setDateClass] = useState('');
   const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
 
-  
+  if (formCase === 'add') {
+    setId(push(tasksRef).key);
+  }
+
+  console.log(id);
+
   const dispatch = useDispatch();
 
   function changeTitleHandler(e) {
@@ -137,22 +131,22 @@ export default function TaskForm() {
             <TextField label="description" sx={{width: 1}} variant="outlined" value={description} onChange={changeDescriptionHandler}/>
           </Grid>
           <Grid item>
-            <Button variant="contained" onClick={toggleAddingFileFormShow}>Add files</Button>
+            <MyButton purpose='add' title='Add Files' handler={toggleAddingFileFormShow}/>
           </Grid>
           <Grid item>
             <FileList/>
           </Grid>
         </Grid>
-        { isAddingFileFormShown && <AddingFileForm id={id} close={toggleAddingFileFormShow}/>}
+        { isAddingFileFormShown && <AddFileForm id={id} close={toggleAddingFileFormShow}/>}
       </CardContent>
       <CardActions>
         <Grid container display='flex' justifyContent='end' spacing={5}>
           <Grid item>
-            {formCase === 'add' && <AddButton type='submit'/>}
-            {formCase === 'edit' && <><SuccessButton handler={successButtonHandler}/><EditButton type='submit'/><DeleteButton handler={deleteButtonHandler}/></>}
+            {formCase === 'add' && <MyButton purpose='add' type='submit'/>}
+            {formCase === 'edit' && <><MyButton purpose='done' handler={successButtonHandler}/><MyButton purpose='edit' type='submit'/><MyButton purpose='delete' handler={deleteButtonHandler}/></>}
           </Grid>
           <Grid item>
-            <CancelButton handler={cancelButtonHandler}/>
+            <MyButton purpose='cancel' handler={cancelButtonHandler}/>
           </Grid>
         </Grid>
       </CardActions>
