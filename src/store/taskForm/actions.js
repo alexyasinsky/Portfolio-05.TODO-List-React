@@ -27,26 +27,8 @@ export const clearCurrentTask = () => ({
   type: CLEAR_CURRENT_TASK,
 })
 
-// export const getFilesOfCurrentTask = () => async (dispatch, getState) => {
-//   const files = await listAll(getFilesRefById(getState().taskForm.currentTask.id));
-//   files.items.forEach(ref => {
-//     dispatch(generateFileData(ref));
-//   })
-// }
-
-// const addFileDataToCurrentTask = (data) => ({
-//   type: ADD_FILE_DATA_TO_CURRENT_TASK,
-//   payload: data
-// })
-
-// const generateFileData = (ref) => async (dispatch) => {
-//   const url = await getDownloadURL(ref);
-//   const data = await getMetadata(ref);
-//   dispatch(addFileDataToCurrentTask({[data.name]: url}));
-// }
-
-export const getFilesOfCurrentTask = () => async (dispatch, getState) => {
-  const files = await listAll(getFilesRefById(getState().taskForm.currentTask.id));
+export const getFilesOfCurrentTask = (id) => async (dispatch) => {
+  const files = await listAll(getFilesRefById(id));
   const filesData = [];
   for (const ref of files.items) {
     const url = await getDownloadURL(ref);

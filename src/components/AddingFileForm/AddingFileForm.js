@@ -5,22 +5,21 @@ import AddButton from "../AddButton";
 import {getFileNameRefById} from "../../services/firebase/storageRefs";
 import {uploadBytes} from "firebase/storage";
 import {useRef} from "react";
-import { getDownloadURL } from "firebase/storage";
+import {useDispatch} from "react-redux";
+import {getFilesOfCurrentTask} from "../../store/taskForm/actions";
 
-export default function AddingFileForm({id, close, addFileLinks}) {
+export default function AddingFileForm({id, close}) {
 
   const fileRef = useRef(null);
 
+  const dispatch = useDispatch();
+
   async function addFiles() {
     close();
-    const fileLinks = {};
     for (const file of fileRef.current.files) {
-      const ref = getFileNameRefById(id, file.name);
-      await uploadBytes(ref, file);
-      const url = await getDownloadURL(getFileNameRefById(id, file.name));
-      Object.assign(fileLinks, {[file.name]: url})
+      await uploadBytes(getFileNameRefById(id, file.name), file);
     }
-    addFileLinks(fileLinks);
+    dispatch(getFilesOfCurrentTask(id));
   }
 
   return (

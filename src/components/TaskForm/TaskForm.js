@@ -35,12 +35,10 @@ export default function TaskForm() {
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
-  // const [files, setFiles] = useState(currentTask.filesData);
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
   const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
-  
-  // const [isFileListShown, setFileListShown] = useState(false);
+
   
   const dispatch = useDispatch();
 
@@ -112,7 +110,7 @@ export default function TaskForm() {
   }, [date]);
 
     useEffect(()=> {
-      dispatch(getFilesOfCurrentTask());
+      dispatch(getFilesOfCurrentTask(id));
   },  [dispatch])
 
   return (
