@@ -2,7 +2,12 @@ import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
-import {selectCurrentTask, selectCurrentTaskId, selectFormCase} from '../../store/taskForm/selectors';
+import {
+  selectCurrentTask,
+  selectCurrentTaskId,
+  selectCurrentTaskTempFilesData,
+  selectFormCase
+} from '../../store/taskForm/selectors';
 import dayjs from "dayjs";
 import {set, update, remove} from "@firebase/database";
 import MyCalendar from "../MyCalendar/MyCalendar";
@@ -12,12 +17,15 @@ import FileList from "../FileList/FileList";
 import AddFileForm from "../AddFileForm/AddFileForm";
 import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
 import MyButton from "../MyButton/MyButton";
+import { deleteObject } from "firebase/storage";
+import {getFileNameRefById} from "../../services/firebase/storageRefs";
 
 export default function TaskForm() {
 
   const currentTask = useSelector(selectCurrentTask);
   const formCase = useSelector(selectFormCase);
   const id = useSelector(selectCurrentTaskId);
+  const tempFilesData = useSelector(selectCurrentTaskTempFilesData);
 
   currentTask.date = new Date(currentTask.date);
 
@@ -66,18 +74,21 @@ export default function TaskForm() {
     dispatch(toggleShowTaskForm());
   }, [dispatch, title, description, date, formCase, id]);
 
-  const cancelButtonHandler = useCallback(() => {
+  const cancelButtonHandler = useCallback(async() => {
+    for (const fileName of tempFilesData) {
+      await deleteObject(getFileNameRefById(id, fileName));
+    }
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch]);
 
-  const deleteButtonHandler = useCallback(() => {
-    remove(getTaskRefById(currentTask.id));
+  const deleteButtonHandler = useCallback(async () => {
+    await remove(getTaskRefById(currentTask.id));
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 
-  const successButtonHandler = useCallback(async ()=> {
+  const doneButtonHandler = useCallback(async ()=> {
     await update(getTaskRefById(currentTask.id), { done: !currentTask.done });
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
@@ -137,7 +148,7 @@ export default function TaskForm() {
         <Grid container display='flex' justifyContent='end' spacing={5}>
           <Grid item>
             {formCase === 'add' && <MyButton purpose='add' type='submit'/>}
-            {formCase === 'edit' && <><MyButton purpose='done' handler={successButtonHandler}/><MyButton purpose='edit' type='submit'/><MyButton purpose='delete' handler={deleteButtonHandler}/></>}
+            {formCase === 'edit' && <><MyButton purpose='done' handler={doneButtonHandler}/><MyButton purpose='edit' type='submit'/><MyButton purpose='delete' handler={deleteButtonHandler}/></>}
           </Grid>
           <Grid item>
             <MyButton purpose='cancel' handler={cancelButtonHandler}/>
