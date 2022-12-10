@@ -56,7 +56,6 @@ export default function TaskForm() {
         date: dayjs(date).valueOf(),
         done: false
       }
-      debugger
     if (formCase === 'add') {
       await set(getTaskRefById(id), task);
     }
