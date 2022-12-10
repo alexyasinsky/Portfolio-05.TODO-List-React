@@ -2,7 +2,7 @@ import {Container, Grid, Paper} from '@mui/material';
 
 import './App.scss';
 
-import TaskList from "./components/TaskList";
+import TaskList from "./components/TaskList/TaskList";
 import TaskForm from "./components/TaskForm/TaskForm";
 import {useDispatch, useSelector} from "react-redux";
 import {selectShowTaskForm} from "./store/taskForm/selectors";
@@ -11,7 +11,6 @@ import {useCallback, useEffect, useState} from "react";
 import MyHeader from "./components/MyHeader/MyHeader";
 import {initTasksTrack, stopTasksTrack} from "./store/tasks/actions";
 import MyButton from "./components/MyButton/MyButton";
-
 
 function App() {
 

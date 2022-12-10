@@ -2,14 +2,13 @@ import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
-import { selectCurrentTask, selectFormCase } from '../../store/taskForm/selectors';
+import {selectCurrentTask, selectCurrentTaskId, selectFormCase} from '../../store/taskForm/selectors';
 import dayjs from "dayjs";
-import {push, set, update, remove} from "@firebase/database";
-
+import {set, update, remove} from "@firebase/database";
 import MyCalendar from "../MyCalendar/MyCalendar";
 import './TaskForm.scss';
-import { getTaskRefById, tasksRef} from "../../services/firebase/dbRefs";
-import FileList from "../FileList";
+import { getTaskRefById} from "../../services/firebase/dbRefs";
+import FileList from "../FileList/FileList";
 import AddFileForm from "../AddFileForm/AddFileForm";
 import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
 import MyButton from "../MyButton/MyButton";
@@ -17,22 +16,18 @@ import MyButton from "../MyButton/MyButton";
 export default function TaskForm() {
 
   const currentTask = useSelector(selectCurrentTask);
-  currentTask.date = new Date(currentTask.date);
   const formCase = useSelector(selectFormCase);
+  const id = useSelector(selectCurrentTaskId);
 
-  const [id, setId] = useState(currentTask.id);
+  currentTask.date = new Date(currentTask.date);
+
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
+
   const [isCalendarShown, setCalendarShown] = useState(false);
   const [dateClass, setDateClass] = useState('');
   const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
-
-  if (formCase === 'add') {
-    setId(push(tasksRef).key);
-  }
-
-  console.log(id);
 
   const dispatch = useDispatch();
 
@@ -105,7 +100,7 @@ export default function TaskForm() {
 
     useEffect(()=> {
       dispatch(getFilesOfCurrentTask(id));
-  },  [dispatch])
+  },  [dispatch, id])
 
   return (
     <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>

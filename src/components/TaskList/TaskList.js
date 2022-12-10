@@ -1,7 +1,7 @@
 import {List, ListItem} from "@mui/material";
-import TaskListItem from "./TaskListItem/TaskListItem";
+import TaskListItem from "../TaskListItem/TaskListItem";
 import {useSelector} from "react-redux";
-import {selectTasks} from "../store/tasks/selectors";
+import {selectTasks} from "../../store/tasks/selectors";
 
 
 export default function TaskList({isDoneTasksShown}) {

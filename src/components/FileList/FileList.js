@@ -1,6 +1,6 @@
 import {List, Link, ListItem} from "@mui/material";
 import { useSelector } from 'react-redux';
-import { selectCurrentTaskFilesData } from '../store/taskForm/selectors';
+import { selectCurrentTaskFilesData } from '../../store/taskForm/selectors';
 
 
 export default function FileList() {

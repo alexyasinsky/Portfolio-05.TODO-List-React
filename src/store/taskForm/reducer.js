@@ -1,9 +1,11 @@
 import {CLEAR_CURRENT_TASK, SET_CURRENT_TASK, TOGGLE_SHOW_TASK_FORM, SET_FORM_CASE, ADD_FILE_DATA_TO_CURRENT_TASK} from "./actions";
+import {push} from "@firebase/database";
+import {tasksRef} from "../../services/firebase/dbRefs";
 
 const initialState = {
   showTaskForm: false,
   currentTask: {
-    id: 0,
+    id: push(tasksRef).key,
     title: '',
     description: '',
     date: new Date().setHours(0,0,0,0),
@@ -34,7 +36,7 @@ export const taskFormReducer = (state = initialState, {type, payload}) => {
       return {
         ...state,
         currentTask: {
-          id: 0,
+          id: push(tasksRef).key,
           title: '',
           description: '',
           date: new Date().setHours(0,0,0,0),
@@ -42,15 +44,7 @@ export const taskFormReducer = (state = initialState, {type, payload}) => {
           filesData: []
         }
       }
-    // case ADD_FILE_DATA_TO_CURRENT_TASK:
-    //   state.currentTask.filesData = [...payload];
-    //   state.currentTask.filesData.push(payload);
-    //   return state;
-
-        case ADD_FILE_DATA_TO_CURRENT_TASK:
-      // state.currentTask.filesData = [...payload];
-      // state.currentTask.filesData.push(payload);
-      // return state;
+    case ADD_FILE_DATA_TO_CURRENT_TASK:
       const task = {
         ...state.currentTask,
         filesData: payload

@@ -16,7 +16,6 @@ export default function AddFileForm({id, close}) {
   async function addFiles() {
     close();
     for (const file of fileRef.current.files) {
-      debugger
       await uploadBytes(getFileNameRefById(id, file.name), file);
     }
     dispatch(getFilesOfCurrentTask(id));
