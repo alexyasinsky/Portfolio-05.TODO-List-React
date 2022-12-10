@@ -1,6 +1,6 @@
 import {Card, CardActions, CardContent} from "@mui/material";
 import './AddFileForm.scss';
-import {getFileNameRefById} from "../../services/firebase/storageRefs";
+import {getFileRefByIdAndName} from "../../services/firebase/storageRefs";
 import {uploadBytes} from "firebase/storage";
 import {useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -17,7 +17,7 @@ export default function AddFileForm({id, close}) {
   async function addFiles() {
     close();
     for (const file of fileRef.current.files) {
-      await uploadBytes(getFileNameRefById(id, file.name), file);
+      await uploadBytes(getFileRefByIdAndName(id, file.name), file);
       tempFilesData.push(file.name)
     }
     dispatch(setCurrentTaskTempFilesData(tempFilesData))

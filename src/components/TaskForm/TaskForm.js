@@ -18,7 +18,7 @@ import AddFileForm from "../AddFileForm/AddFileForm";
 import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
 import MyButton from "../MyButton/MyButton";
 import { deleteObject } from "firebase/storage";
-import {getFileNameRefById} from "../../services/firebase/storageRefs";
+import {getFileRefByIdAndName} from "../../services/firebase/storageRefs";
 
 export default function TaskForm() {
 
@@ -76,7 +76,7 @@ export default function TaskForm() {
 
   const cancelButtonHandler = useCallback(async() => {
     for (const fileName of tempFilesData) {
-      await deleteObject(getFileNameRefById(id, fileName));
+      await deleteObject(getFileRefByIdAndName(id, fileName));
     }
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
@@ -98,7 +98,7 @@ export default function TaskForm() {
     const msFromUnix = dayjs(date).valueOf();
     const today = dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf();
     if (msFromUnix === today) {
-      setDateClass('date_today');
+      setDateClass( 'date_today');
     }
     if (msFromUnix < today) {
       setDateClass('date_past')
@@ -113,30 +113,30 @@ export default function TaskForm() {
   },  [dispatch, id])
 
   return (
-    <Card component='form' onSubmit={submitButtonHandler} sx={{position: 'absolute', minHeight: '400px', width: '96%', bottom: '400px', zIndex: 1100, border: '1px solid black', margin: '0 1%', padding: '1% 1%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-      <CardContent sx={{position: 'relative'}}>
+    <Card component='form' onSubmit={submitButtonHandler} className="taskForm">
+      <CardContent className="taskForm__content">
         <Grid container display='flex' flexDirection='column' spacing={2}>
           <Grid position='relative'>
             { isCalendarShown && <MyCalendar value={date} setValue={(d) => setDate(d)} close={toggleCalendarShow}/> }
           </Grid>
           <Grid item >
-            <Typography variant='h6' sx={{width: 1}}>
+            <Typography variant='h6'>
               Task
             </Typography>
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={8}>
-              <TextField label="title" variant="outlined" value={title} onChange={changeTitleHandler} sx={{width: 1}} required={true}/>
+              <TextField label="title" variant="outlined" value={title} onChange={changeTitleHandler} className='taskForm__textField' required={true}/>
             </Grid>
             <Grid item xs={4}>
-              <TextField label="date" variant="outlined" value={dayjs(date).format('DD-MM-YYYY')} sx={{width: 1}} InputProps={{readOnly: true}} onClick={toggleCalendarShow} className={dateClass}/>
+              <TextField label="date" variant="outlined" value={dayjs(date).format('DD-MM-YYYY')} InputProps={{readOnly: true}} onClick={toggleCalendarShow} className={`taskForm__textField ${dateClass}`}/>
             </Grid>
           </Grid>
           <Grid item>
-            <TextField label="description" sx={{width: 1}} variant="outlined" value={description} onChange={changeDescriptionHandler}/>
+            <TextField label="description" className='taskForm__textField' variant="outlined" value={description} onChange={changeDescriptionHandler}/>
           </Grid>
           <Grid item>
-            <MyButton purpose='add' title='Add Files' handler={toggleAddingFileFormShow}/>
+            <MyButton purpose='add' customTitle='Add Files' handler={toggleAddingFileFormShow}/>
           </Grid>
           <Grid item>
             <FileList/>

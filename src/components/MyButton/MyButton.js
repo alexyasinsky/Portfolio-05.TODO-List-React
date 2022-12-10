@@ -35,7 +35,7 @@ const buttonPurposes = {
   }
 }
 
-export default function MyButton({purpose, type, handler, title}) {
+export default function MyButton({purpose, type, handler, customTitle}) {
 
   const button = buttonPurposes[purpose];
 
@@ -49,7 +49,7 @@ export default function MyButton({purpose, type, handler, title}) {
       size='large'
       type={type}
     >
-      {title || button.title}
+      {customTitle || button.title}
     </Button>
   )
 }

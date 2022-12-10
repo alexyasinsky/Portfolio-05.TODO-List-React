@@ -1,4 +1,5 @@
 .date {
+  width: 100%;
   &_today input {
     color: orange !important;
   }
@@ -7,5 +8,25 @@
   }
   &_future input {
     color: green !important;
+  }
+}
+
+.taskForm {
+  position: absolute;
+  min-height: 400px;
+  width: 96%;
+  top: 200px;
+  z-index: 1100;
+  border: 1px solid black;
+  margin: 0 1%;
+  padding: 1% 1%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  &__content {
+    position: relative
+  }
+  &__textField {
+    width: 100%;
   }
 }
