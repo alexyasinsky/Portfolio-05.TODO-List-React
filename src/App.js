@@ -1,6 +1,6 @@
 import {Container, Grid, Paper} from '@mui/material';
 
-import './App.scss';
+import './App.less';
 
 import TaskList from "./components/TaskList/TaskList";
 import TaskForm from "./components/TaskForm/TaskForm";

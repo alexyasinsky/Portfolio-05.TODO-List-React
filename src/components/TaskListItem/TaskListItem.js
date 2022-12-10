@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import {useCallback, useEffect, useState} from "react";
 import {setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskForm/actions";
 
-import './TaskListItem.scss';
+import './TaskListItem.less';
 import dayjs from "dayjs";
 import {update} from "@firebase/database";
 import {getTaskRefById} from "../../services/firebase/dbRefs";

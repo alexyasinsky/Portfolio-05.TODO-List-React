@@ -11,7 +11,7 @@ import {
 import dayjs from "dayjs";
 import {set, update, remove} from "@firebase/database";
 import MyCalendar from "../MyCalendar/MyCalendar";
-import './TaskForm.scss';
+import './TaskForm.less';
 import { getTaskRefById} from "../../services/firebase/dbRefs";
 import FileList from "../FileList/FileList";
 import AddFileForm from "../AddFileForm/AddFileForm";

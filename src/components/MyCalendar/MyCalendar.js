@@ -1,5 +1,5 @@
 import Calendar from 'moedim';
-import './MyCalendar.scss';
+import './MyCalendar.less';
 import {Button} from "@mui/material";
 
 

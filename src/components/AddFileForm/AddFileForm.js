@@ -1,5 +1,5 @@
 import {Card, CardActions, CardContent} from "@mui/material";
-import './AddFileForm.scss';
+import './AddFileForm.less';
 import {getFileRefByIdAndName} from "../../services/firebase/storageRefs";
 import {uploadBytes} from "firebase/storage";
 import {useRef} from "react";

@@ -1,5 +1,5 @@
 import {AppBar, Box, Checkbox, Toolbar, Typography} from "@mui/material";
-import './MyHeader.scss'
+import './MyHeader.less'
 
 export default function MyHeader({isDoneTasksShown, setDoneTasksShown}) {
 
