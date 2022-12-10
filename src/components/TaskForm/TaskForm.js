@@ -1,13 +1,12 @@
 import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {clearCurrentTask, toggleShowTaskForm} from "../../store/taskForm/actions";
+import {clearCurrentTask} from "../../store/currentTask/actions";
 import {
   selectCurrentTask,
   selectCurrentTaskId,
   selectCurrentTaskTempFilesData,
-  selectFormCase
-} from '../../store/taskForm/selectors';
+} from '../../store/currentTask/selectors';
 import dayjs from "dayjs";
 import {set, update, remove} from "@firebase/database";
 import MyCalendar from "../MyCalendar/MyCalendar";
@@ -15,16 +14,18 @@ import './TaskForm.less';
 import { getTaskRefById} from "../../services/firebase/dbRefs";
 import FileList from "../FileList/FileList";
 import AddFileForm from "../AddFileForm/AddFileForm";
-import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
+import { getFilesOfCurrentTask } from '../../store/currentTask/actions';
 import MyButton from "../MyButton/MyButton";
 import { deleteObject } from "firebase/storage";
 import {getFileRefByIdAndName} from "../../services/firebase/storageRefs";
 import getDateClass from "../../services/tools";
+import {selectTaskFormCase} from "../../store/interfaceVars/selectors";
+import {toggleShowTaskForm} from "../../store/interfaceVars/actions";
 
 export default function TaskForm() {
 
   const currentTask = useSelector(selectCurrentTask);
-  const formCase = useSelector(selectFormCase);
+  const formCase = useSelector(selectTaskFormCase);
   const id = useSelector(selectCurrentTaskId);
   const tempFilesData = useSelector(selectCurrentTaskTempFilesData);
 

@@ -4,9 +4,9 @@ import {getFileRefByIdAndName} from "../../services/firebase/storageRefs";
 import {uploadBytes} from "firebase/storage";
 import {useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getFilesOfCurrentTask, setCurrentTaskTempFilesData} from "../../store/taskForm/actions";
+import {getFilesOfCurrentTask, setCurrentTaskTempFilesData} from "../../store/currentTask/actions";
 import MyButton from "../MyButton/MyButton";
-import {selectCurrentTaskTempFilesData} from "../../store/taskForm/selectors";
+import {selectCurrentTaskTempFilesData} from "../../store/currentTask/selectors";
 
 export default function AddFileForm({id, close}) {
 

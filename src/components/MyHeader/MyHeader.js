@@ -1,10 +1,17 @@
 import {AppBar, Box, Checkbox, Toolbar, Typography} from "@mui/material";
 import './MyHeader.less'
+import {useDispatch, useSelector} from "react-redux";
+import {selectShowDoneTasks} from "../../store/interfaceVars/selectors";
+import {toggleShowDoneTasks} from "../../store/interfaceVars/actions";
 
-export default function MyHeader({isDoneTasksShown, setDoneTasksShown}) {
+export default function MyHeader() {
 
-  const handleCheckbox = (event) => {
-    setDoneTasksShown(event.target.checked);
+  const isDoneTasksShown = useSelector(selectShowDoneTasks);
+  console.log(isDoneTasksShown)
+  const dispatch = useDispatch();
+
+  const handleCheckbox = () => {
+    dispatch(toggleShowDoneTasks());
   };
 
   return (

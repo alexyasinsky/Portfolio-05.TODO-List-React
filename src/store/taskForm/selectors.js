@@ -1,6 +1,0 @@
-export const selectShowTaskForm = state => state.taskForm.showTaskForm;
-export const selectCurrentTask = state => state.taskForm.currentTask;
-export const selectFormCase = state => state.taskForm.formCase;
-export const selectCurrentTaskFilesData = state => state.taskForm.currentTask.filesData;
-export const selectCurrentTaskId = state => state.taskForm.currentTask.id;
-export const selectCurrentTaskTempFilesData = state => state.taskForm.currentTask.tempFilesData;

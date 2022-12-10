@@ -5,12 +5,13 @@ import './App.less';
 import TaskList from "./components/TaskList/TaskList";
 import TaskForm from "./components/TaskForm/TaskForm";
 import {useDispatch, useSelector} from "react-redux";
-import {selectShowTaskForm} from "./store/taskForm/selectors";
-import {clearCurrentTask, setFormCase, toggleShowTaskForm} from "./store/taskForm/actions";
-import {useCallback, useEffect, useState} from "react";
+import {clearCurrentTask} from "./store/currentTask/actions";
+import {useCallback, useEffect} from "react";
 import MyHeader from "./components/MyHeader/MyHeader";
 import {initTasksTrack, stopTasksTrack} from "./store/tasks/actions";
 import MyButton from "./components/MyButton/MyButton";
+import {selectShowTaskForm} from "./store/interfaceVars/selectors";
+import {setTaskFormCase, toggleShowTaskForm} from "./store/interfaceVars/actions";
 
 function App() {
 
@@ -20,7 +21,7 @@ function App() {
 
   const showTaskFormButtonHandler = useCallback(()=> {
     dispatch(clearCurrentTask());
-    dispatch(setFormCase('add'));
+    dispatch(setTaskFormCase('add'));
     dispatch(toggleShowTaskForm());
   }, [dispatch]);
 
@@ -31,25 +32,20 @@ function App() {
     }
   }, [dispatch]);
 
-  const [isDoneTasksShown, setDoneTasksShown] = useState(false);
-
   return (
     <Container maxWidth="md" className='app'>
       <Paper elevation={5}>
         <Grid container direction='column'>
           <Grid item>
-            <MyHeader isDoneTasksShown={isDoneTasksShown} setDoneTasksShown={setDoneTasksShown}/>
+            <MyHeader/>
           </Grid>
           <Grid item position='relative'>
               <main>
-                <TaskList isDoneTasksShown={isDoneTasksShown}/>
-                {showTaskForm ?
-                  <TaskForm/>
-                  :
-                  <div className='showFormButton'>
-                    <MyButton purpose='add' handler={showTaskFormButtonHandler}/>
-                  </div>
-                }
+                <TaskList/>
+                { showTaskForm && <TaskForm/> }
+                <div className='showFormButton'>
+                  <MyButton purpose='add' handler={showTaskFormButtonHandler}/>
+                </div>
               </main>
           </Grid>
         </Grid>

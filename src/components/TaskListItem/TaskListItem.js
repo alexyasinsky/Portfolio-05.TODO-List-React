@@ -1,13 +1,14 @@
 import {CardContent, Typography, Card, Checkbox} from "@mui/material";
 import {useDispatch} from "react-redux";
 import {useCallback, useEffect, useState} from "react";
-import {setCurrentTask, setFormCase, toggleShowTaskForm} from "../../store/taskForm/actions";
+import {setCurrentTask} from "../../store/currentTask/actions";
 
 import './TaskListItem.less';
 import dayjs from "dayjs";
 import {update} from "@firebase/database";
 import {getTaskRefById} from "../../services/firebase/dbRefs";
 import getDateClass from "../../services/tools";
+import {setTaskFormCase, toggleShowTaskForm} from "../../store/interfaceVars/actions";
 
 export default function TaskListItem({task}) {
 
@@ -15,7 +16,7 @@ export default function TaskListItem({task}) {
   const [dateClass, setDateClass] = useState('');
 
   const clickToCardHandler = useCallback(()=> {
-    dispatch(setFormCase('edit'));
+    dispatch(setTaskFormCase('edit'));
     dispatch(toggleShowTaskForm());
     dispatch(setCurrentTask(task));
   }, [dispatch, task]);

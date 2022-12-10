@@ -3,6 +3,7 @@ import TaskListItem from "../TaskListItem/TaskListItem";
 import {useSelector} from "react-redux";
 import {selectTasks} from "../../store/tasks/selectors";
 import './TaskList.less';
+import {selectShowDoneTasks} from "../../store/interfaceVars/selectors";
 
 
 function compareTaskDate(a, b) {
@@ -12,8 +13,10 @@ function compareTaskDate(a, b) {
 }
 
 
-export default function TaskList({isDoneTasksShown}) {
+export default function TaskList() {
+
   let tasks = useSelector(selectTasks);
+  const isDoneTasksShown = useSelector(selectShowDoneTasks);
 
   if (!isDoneTasksShown) {
     tasks = tasks.filter((item) => {
