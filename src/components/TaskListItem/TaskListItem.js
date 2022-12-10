@@ -7,15 +7,14 @@ import './TaskListItem.less';
 import dayjs from "dayjs";
 import {update} from "@firebase/database";
 import {getTaskRefById} from "../../services/firebase/dbRefs";
+import getDateClass from "../../services/tools";
 
 export default function TaskListItem({task}) {
-
-  task.date = new Date(task.date);
 
   const dispatch = useDispatch();
   const [dateClass, setDateClass] = useState('');
 
-  const handler = useCallback(()=> {
+  const clickToCardHandler = useCallback(()=> {
     dispatch(setFormCase('edit'));
     dispatch(toggleShowTaskForm());
     dispatch(setCurrentTask(task));
@@ -26,28 +25,18 @@ export default function TaskListItem({task}) {
   }, [task]);
 
   useEffect(()=> {
-    const msFromUnix = dayjs(task.date).valueOf();
-    const today = dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf();
-    if (msFromUnix === today) {
-      setDateClass('taskListItem__date_today');
-    }
-    if (msFromUnix < today) {
-      setDateClass('taskListItem__date_past')
-    }
-    if (msFromUnix > today) {
-      setDateClass('taskListItem__date_future')
-    }
+    setDateClass(getDateClass(task.date));
   }, [task]);
 
   return (
-    <Card className='taskListItem__card'>
+    <Card className='taskListItem taskListItem__card'>
       <CardContent className='taskListItem__content'>
         <Checkbox onChange={handleChecking} checked={task.done}/>
-        <div onClick={handler}>
+        <div onClick={clickToCardHandler}>
           <Typography className='taskListItem__title'>
             {task.title}
           </Typography>
-          <Typography className={`taskListItem__date ${dateClass}`}>
+          <Typography className={`date ${dateClass}`}>
             {dayjs(task.date).format('DD-MM-YYYY')}
         </Typography>
         </div>

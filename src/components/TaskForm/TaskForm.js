@@ -19,6 +19,7 @@ import { getFilesOfCurrentTask } from '../../store/taskForm/actions';
 import MyButton from "../MyButton/MyButton";
 import { deleteObject } from "firebase/storage";
 import {getFileRefByIdAndName} from "../../services/firebase/storageRefs";
+import getDateClass from "../../services/tools";
 
 export default function TaskForm() {
 
@@ -27,7 +28,6 @@ export default function TaskForm() {
   const id = useSelector(selectCurrentTaskId);
   const tempFilesData = useSelector(selectCurrentTaskTempFilesData);
 
-  currentTask.date = new Date(currentTask.date);
 
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
@@ -95,21 +95,11 @@ export default function TaskForm() {
   }, [dispatch, currentTask]);
 
   useEffect(()=> {
-    const msFromUnix = dayjs(date).valueOf();
-    const today = dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf();
-    if (msFromUnix === today) {
-      setDateClass( 'date_today');
-    }
-    if (msFromUnix < today) {
-      setDateClass('date_past')
-    }
-    if (msFromUnix > today) {
-      setDateClass('date_future')
-    }
+    setDateClass(getDateClass(date));
   }, [date]);
 
-    useEffect(()=> {
-      dispatch(getFilesOfCurrentTask(id));
+  useEffect(()=> {
+    dispatch(getFilesOfCurrentTask(id));
   },  [dispatch, id])
 
   return (

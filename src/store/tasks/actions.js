@@ -18,7 +18,11 @@ let unsubscribe;
 export const initTasksTrack = () => (dispatch) => {
   const unsubscribeTasks = onValue(tasksRef, snapshot => {
     const tasks = snapshot.val();
-    const tasksArray = Object.values(tasks);
+    let tasksArray = Object.values(tasks);
+    tasksArray = tasksArray.map(task => {
+      task.date = new Date(task.date);
+      return task;
+    });
     dispatch(setTasks(tasksArray));
   });
   unsubscribe = () => {
