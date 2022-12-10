@@ -80,7 +80,7 @@ export default function TaskForm() {
     }
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
-  }, [dispatch]);
+  }, [dispatch, id, tempFilesData]);
 
   const deleteButtonHandler = useCallback(async () => {
     await remove(getTaskRefById(currentTask.id));
