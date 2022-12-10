@@ -1,7 +1,7 @@
 import {Card, CardActions, CardContent, Grid, TextField, Typography} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {clearCurrentTask} from "../../store/currentTask/actions";
+import {setEmptyCurrentTask} from "../../store/currentTask/actions";
 import {
   selectCurrentTask,
   selectCurrentTaskId,
@@ -70,7 +70,7 @@ export default function TaskForm() {
     if (formCase === 'edit') {
       await update(getTaskRefById(id), task);
     }
-    dispatch(clearCurrentTask());
+    dispatch(setEmptyCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, title, description, date, formCase, id]);
 
@@ -78,19 +78,19 @@ export default function TaskForm() {
     for (const fileName of tempFilesData) {
       await deleteObject(getFileRefByIdAndName(id, fileName));
     }
-    dispatch(clearCurrentTask());
+    dispatch(setEmptyCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, id, tempFilesData]);
 
   const deleteButtonHandler = useCallback(async () => {
     await remove(getTaskRefById(currentTask.id));
-    dispatch(clearCurrentTask());
+    dispatch(setEmptyCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 
   const doneButtonHandler = useCallback(async ()=> {
     await update(getTaskRefById(currentTask.id), { done: true });
-    dispatch(clearCurrentTask());
+    dispatch(setEmptyCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
 

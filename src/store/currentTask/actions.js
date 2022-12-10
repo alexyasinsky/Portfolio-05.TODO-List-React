@@ -12,7 +12,7 @@ export const setCurrentTask = (task) => ({
   payload: task
 })
 
-export const clearCurrentTask = () => ({
+export const setEmptyCurrentTask = () => ({
   type: CLEAR_CURRENT_TASK,
 })
 
