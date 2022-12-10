@@ -29,7 +29,6 @@ export default function TaskForm() {
   const id = useSelector(selectCurrentTaskId);
   const tempFilesData = useSelector(selectCurrentTaskTempFilesData);
 
-
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
@@ -90,7 +89,7 @@ export default function TaskForm() {
   }, [dispatch, currentTask]);
 
   const doneButtonHandler = useCallback(async ()=> {
-    await update(getTaskRefById(currentTask.id), { done: !currentTask.done });
+    await update(getTaskRefById(currentTask.id), { done: true });
     dispatch(clearCurrentTask());
     dispatch(toggleShowTaskForm());
   }, [dispatch, currentTask]);
