@@ -10,30 +10,56 @@ import {getTaskRefById} from "../../services/firebase/dbRefs";
 import getDateClass from "../../services/tools";
 import {setTaskFormCase, toggleShowTaskForm} from "../../store/interfaceVars/actions";
 
+
+/**
+ * компонент элемента списка заданий
+ * @param task - объект задания
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function TaskListItem({task}) {
 
   const dispatch = useDispatch();
+
+  /**
+   * переменная для хранения значения класса даты
+   */
   const [dateClass, setDateClass] = useState('');
 
-  const clickToCardHandler = useCallback(()=> {
-    dispatch(setTaskFormCase('edit'));
-    dispatch(toggleShowTaskForm());
-    dispatch(setCurrentTask(task));
-  }, [dispatch, task]);
-
-  const handleChecking = useCallback(async ()=> {
-    await update(getTaskRefById(task.id), { done: !task.done });
-  }, [task]);
-
+  /**
+   * хук отслеживания изменения даты текущего задания с целью изменения класса поля даты
+   */
   useEffect(()=> {
     setDateClass(getDateClass(task.date));
   }, [task]);
+  /**
+   * функция для обработки нажатия на содержательную часть компонента
+   * - устанавливает вариант формы текущего задания в режим "edit"
+   * - открывает форму текущего задания
+   * - загружает выбранное задание в стор текущего задания
+   * @type {(function(): void)|*}
+   */
+  const clickToCardContentHandler = useCallback(()=> {
+    dispatch(setTaskFormCase('edit'));
+    dispatch(setCurrentTask(task));
+    dispatch(toggleShowTaskForm());
+  }, [dispatch, task]);
+
+  /**
+   * функция-обработчик нажатия на чекбокс - обновляет на сервере информацию о статусе задачи на "выполнено"
+   * @type {(function(): Promise<void>)|*}
+   */
+  const checkboxHandler = useCallback(async ()=> {
+    await update(getTaskRefById(task.id), { done: !task.done });
+  }, [task]);
+
+
 
   return (
     <Card className='taskListItem taskListItem__card'>
-      <CardContent className='taskListItem__content'>
-        <Checkbox onChange={handleChecking} checked={task.done}/>
-        <div onClick={clickToCardHandler}>
+      <Checkbox onChange={checkboxHandler} checked={task.done}/>
+      <CardContent className='taskListItem__content' onClick={clickToCardContentHandler}>
+        <div >
           <Typography className='taskListItem__title'>
             {task.title}
           </Typography>

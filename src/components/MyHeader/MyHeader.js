@@ -4,15 +4,28 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectShowDoneTasks} from "../../store/interfaceVars/selectors";
 import {toggleShowDoneTasks} from "../../store/interfaceVars/actions";
 
+
+/**
+ * компонент-header
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function MyHeader() {
 
+  /**
+   * переменная, привязанная к чекбоксу, определяющая видимость сделанных заданий в списке заданий
+   * @type {unknown}
+   */
   const isDoneTasksShown = useSelector(selectShowDoneTasks);
-  console.log(isDoneTasksShown)
+
   const dispatch = useDispatch();
 
-  const handleCheckbox = () => {
+  /**
+   * функция-обработчик чекбокса для изменения значения переменной isDoneTasksShown
+   */
+  function checkboxHandler () {
     dispatch(toggleShowDoneTasks());
-  };
+  }
 
   return (
     <AppBar position="static">
@@ -35,7 +48,7 @@ export default function MyHeader() {
         <Checkbox
           color="secondary"
           checked={isDoneTasksShown}
-          onChange={handleCheckbox}
+          onChange={checkboxHandler}
         />
       </Toolbar>
     </AppBar>

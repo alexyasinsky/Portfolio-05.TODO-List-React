@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setEmptyCurrentTask} from "../../store/currentTask/actions";
 import {
-  selectCurrentTask,
+  selectCurrentTask, selectCurrentTaskFilesData,
   selectCurrentTaskId,
   selectCurrentTaskTempFilesData,
 } from '../../store/currentTask/selectors';
@@ -22,31 +22,56 @@ import getDateClass from "../../services/tools";
 import {selectTaskFormCase} from "../../store/interfaceVars/selectors";
 import {toggleShowTaskForm} from "../../store/interfaceVars/actions";
 
-export default function TaskForm() {
 
+/**
+ * компонент формы для добавления/изменения текущего задания
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function TaskForm() {
+  /**
+   * переменная текущего задания
+   * @type {object}
+   */
   const currentTask = useSelector(selectCurrentTask);
+  /**
+   * переменная варианта формы - для добавления (add) или изменения (edit) текущего задания
+   * @type {string}
+   */
   const formCase = useSelector(selectTaskFormCase);
   const id = useSelector(selectCurrentTaskId);
+  /**
+   * массив для хранения названий добавленных во время работы с текущим заданием файлов
+   * @type {array}
+   */
   const tempFilesData = useSelector(selectCurrentTaskTempFilesData);
-
+  const filesData = useSelector(selectCurrentTaskFilesData);
+  /**
+   * переменные для хранения значений полей формы
+   */
   const [title, setTitle] = useState(currentTask.title);
   const [description, setDescription] = useState(currentTask.description);
   const [date, setDate] = useState(currentTask.date);
 
-  const [isCalendarShown, setCalendarShown] = useState(false);
-  const [dateClass, setDateClass] = useState('');
-  const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
-
-  const dispatch = useDispatch();
-
+  /**
+   * функции-обработчики ввода пользователей в поля "название задачи" и "описание"
+   * @param e - событие event
+   */
   function changeTitleHandler(e) {
     setTitle(e.target.value);
   }
-
   function changeDescriptionHandler(e) {
     setDescription(e.target.value);
   }
 
+  /**
+   * переменные для хранения значений видимости компонентов календаря и формы добавления нового файла
+   */
+  const [isCalendarShown, setCalendarShown] = useState(false);
+  const [isAddingFileFormShown, setAddingFileFormShow] = useState(false);
+  /**
+   * методы для изменения значения видимости компонентов календаря и формы добавления нового файла
+   */
   function toggleCalendarShow() {
     setCalendarShown(previous => !previous);
   }
@@ -54,7 +79,28 @@ export default function TaskForm() {
   function toggleAddingFileFormShow() {
     setAddingFileFormShow(previous => !previous);
   }
+  /**
+   * переменная для хранения значения класса даты
+   */
+  const [dateClass, setDateClass] = useState('');
+  /**
+   * хук отслеживания изменения даты текущего задания с целью изменения класса поля даты
+   */
+  useEffect(()=> {
+    setDateClass(getDateClass(date));
+  }, [date]);
 
+  const dispatch = useDispatch();
+
+  /**
+   * функция-обработчик кнопок отправки формы ("Add" или "Edit"):
+   * - прекращает автоматическую отправку формы
+   * - создает объект "задание", содержащий полученные от пользователя данные
+   * - отправляет задание на сервер с учетом варианта формы
+   * - завершает работу над текущим заданием
+
+   * @type {(function(*): Promise<void>)|*}
+   */
   const submitButtonHandler = useCallback(async (e) => {
     e.preventDefault();
       const task = {
@@ -70,34 +116,61 @@ export default function TaskForm() {
     if (formCase === 'edit') {
       await update(getTaskRefById(id), task);
     }
-    dispatch(setEmptyCurrentTask());
-    dispatch(toggleShowTaskForm());
+    finishWorkWithCurrentTask();
   }, [dispatch, title, description, date, formCase, id]);
 
+  /**
+   * функция-обработчик кнопки "Cancel":
+   * удаляет временные файлы на сервере
+   * - отчищает стор с текущим заданием
+   * - завершает работу над текущим заданием
+   * @type {(function(): Promise<void>)|*}
+   */
   const cancelButtonHandler = useCallback(async() => {
     for (const fileName of tempFilesData) {
       await deleteObject(getFileRefByIdAndName(id, fileName));
     }
-    dispatch(setEmptyCurrentTask());
-    dispatch(toggleShowTaskForm());
+    finishWorkWithCurrentTask();
   }, [dispatch, id, tempFilesData]);
-
+  /**
+   * функция-обработчик кнопки "Delete":
+   * - удаляет текущее задание с сервера;
+   * - удаляет файлы текущего задания с сервера
+   * - завершает работу над текущим заданием
+   * @type {(function(): Promise<void>)|*}
+   */
   const deleteButtonHandler = useCallback(async () => {
     await remove(getTaskRefById(currentTask.id));
-    dispatch(setEmptyCurrentTask());
-    dispatch(toggleShowTaskForm());
+    for (const fileName of filesData) {
+      await deleteObject(getFileRefByIdAndName(id, fileName));
+    }
+    finishWorkWithCurrentTask();
   }, [dispatch, currentTask]);
 
+  /**
+   * функция-обработчик кнопки "Done":
+   * - обновляет на сервере информацию о статусе задачи на "выполнено"
+   * - завершает работу над текущим заданием
+   * @type {(function(): Promise<void>)|*}
+   */
   const doneButtonHandler = useCallback(async ()=> {
     await update(getTaskRefById(currentTask.id), { done: true });
-    dispatch(setEmptyCurrentTask());
-    dispatch(toggleShowTaskForm());
+    finishWorkWithCurrentTask();
   }, [dispatch, currentTask]);
 
-  useEffect(()=> {
-    setDateClass(getDateClass(date));
-  }, [date]);
+  /**
+   * функция для завершения работы над текущим заданием:
+   * - отчищает текущее задание в сторе
+   * - закрывает компонент-форму текущего задания
+   */
+  function finishWorkWithCurrentTask() {
+    dispatch(setEmptyCurrentTask());
+    dispatch(toggleShowTaskForm());
+  }
 
+  /**
+   * хук для обновления списка файлов
+   */
   useEffect(()=> {
     dispatch(getFilesOfCurrentTask(id));
   },  [dispatch, id])

@@ -7,6 +7,8 @@ import {interfaceVarsReducer} from "./interfaceVars/reducer";
 import {currentTaskReducer} from "./currentTask/reducer";
 
 
+//настройки redux store
+
 const rootReducer = combineReducers({
   tasks: taskReducer,
   currentTask: currentTaskReducer,

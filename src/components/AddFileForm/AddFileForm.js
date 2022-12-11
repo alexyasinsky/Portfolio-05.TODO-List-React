@@ -8,15 +8,34 @@ import {getFilesOfCurrentTask, setCurrentTaskTempFilesData} from "../../store/cu
 import MyButton from "../MyButton/MyButton";
 import {selectCurrentTaskTempFilesData} from "../../store/currentTask/selectors";
 
-export default function AddFileForm({id, close}) {
+/**
+ * компонент формы добавления нового файла
+ * @param id идентификатор текущего задания
+ * @param close метод для закрытия формы
+ * @returns {JSX.Element}
+ * @constructor
+ */
 
-  const fileRef = useRef(null);
+export default function AddFileForm({id, close}) {
+  /**
+   * хук для ссылки на инпут, который используется для добавления файлов
+   * @type {React.MutableRefObject<null>}
+   */
+  const filesRef = useRef(null);
   const tempFilesData = useSelector(selectCurrentTaskTempFilesData);
   const dispatch = useDispatch();
 
-  async function addFiles() {
+  /**
+   * обработчик кнопки, который
+   * - закрывает форму
+   * - загружает файлы на сервер
+   * - перезаписывает временные файлы текущего задания
+   * - обновляет список файлов текущего задания
+   * @returns {Promise<void>}
+   */
+  async function addFilesButtonHandler() {
     close();
-    for (const file of fileRef.current.files) {
+    for (const file of filesRef.current.files) {
       await uploadBytes(getFileRefByIdAndName(id, file.name), file);
       tempFilesData.push(file.name)
     }
@@ -27,10 +46,10 @@ export default function AddFileForm({id, close}) {
   return (
     <Card className='fileForm'>
       <CardContent>
-        <input type="file" id="input" multiple ref={fileRef}/>
+        <input type="file" id="input" multiple ref={filesRef}/>
       </CardContent>
       <CardActions>
-        <MyButton purpose='add' handler={addFiles}/>
+        <MyButton purpose='add' handler={addFilesButtonHandler}/>
         <MyButton purpose='cancel' handler={close}/>
       </CardActions>
     </Card>

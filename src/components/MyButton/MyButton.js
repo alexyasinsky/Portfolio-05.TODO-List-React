@@ -7,6 +7,10 @@ import CheckIcon from "@mui/icons-material/Check";
 
 import './MyButton.less';
 
+/**
+ * объект, содержащий назначения кнопок и соответсвующие этому назначению варианты иконки, надписи на кнопке и цвета кнопки
+
+ */
 const buttonPurposes = {
   add: {
     icon: <AddIcon/>,
@@ -35,6 +39,15 @@ const buttonPurposes = {
   }
 }
 
+/**
+ * компонент универсальной кнопки
+ * @param purpose - назначение кнопки
+ * @param type - тип (стандартный параметр кнопки)
+ * @param handler - обработчик нажатия на кнопку
+ * @param customTitle - нестандартная по отношению к назначению кнопки надпись на кнопке
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function MyButton({purpose, type, handler, customTitle}) {
 
   const button = buttonPurposes[purpose];
