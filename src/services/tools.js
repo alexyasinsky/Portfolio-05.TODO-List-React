@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 /**
  * функция для получения значения класса даты путем сравнения значений текущей даты с полученной в качестве параметра
- * @param date - объект Date
+ * @param date - объект типа Date
  * @returns {string} - значение класса даты
  */
 export default function getDateClass(date) {
